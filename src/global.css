@@ -1,0 +1,53 @@
+/* File: `src/global.css` */
+:root {
+  --bg-1: #070708;
+  --bg-2: #0b0b0b;
+  --accent: #0ff;
+  --text: #e6f9f9;
+}
+
+/* ensure full-height background */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+/* global page background */
+body {
+  min-height: 100%;
+  background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
+  color: var(--text);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+/* optional wrapper class to ensure App container is transparent */
+.app-bg {
+  min-height: 100vh;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+/* helpers: keep interactive elements consistent */
+button, select, input, textarea {
+  color: var(--text);
+  background: transparent;
+  border-color: rgba(255,255,255,0.06);
+}
+
+/* small utility to apply accent color */
+.text-accent { color: var(--accent) !important; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

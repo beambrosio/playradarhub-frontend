@@ -1,0 +1,14 @@
+body {
+  font-family: 'Grotesk', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #1C1C1C;
+}
+
+.modal-description {
+  font-family: 'Grotesk', sans-serif !important;
+  font-size: 16px !important;
+  color: #eee !important;
+  line-height: 1.5 !important;
+  margin-top: 12px;
+}
