@@ -1,74 +1,69 @@
-<<<<<<< HEAD
-# Getting Started with Create React App
+# PlayRadarHub Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern React application for discovering and tracking radar-based gaming content and communities.
 
+## About the Project
+
+PlayRadarHub Frontend is a responsive web application built with React that provides users with an intuitive interface to explore gaming radar data, track performance metrics, and connect with the gaming community.
+
+## Features
+
+- 🎮 Browse and discover radar gaming content
+- 📊 Track performance metrics and statistics
+- 👥 Connect with gaming communities
+- 🔍 Advanced search and filtering capabilities
+- 📱 Responsive design for all devices
+
+## Prerequisites
+
+- Node.js (v14 or higher)
+- npm or yarn
+- A modern web browser
+
+## Getting Started
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/beambrosio/playradarhub-frontend.git
+cd playradarhub-frontend 
+
+```
+
+## Install dependencies:
+```npm install```
 ## Available Scripts
+```npm start```
 
-In the project directory, you can run:
+Runs the app in development mode at http://localhost:3000.
+```npm test ```
 
-### `npm start`
+Launches the test runner in interactive watch mode.
+```npm run build```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Builds the app for production to the build folder, optimized for best performance.
+```npm run eject```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-=======
-# playradarhub-frontend
->>>>>>> 21f904a5a8d6af4c13a24a551d50593e967a431a
+Note: this is a one-way operation.
+Ejects the app from Create React App, giving you full control over configuration files.
+Project Structure
+```
+src/
+├── components/    # Reusable React components
+├── pages/         # Page components
+├── services/      # API and utility services
+├── hooks/         # Custom React hooks
+├── styles/        # CSS and styling
+└── App.js         # Main application component
+```
+## Technology Stack
+React - UI library
+Create React App - Build tooling
+npm - Package manager
+## Contributing
+Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
+## License
+This project is licensed under the MIT License.
+## Contact
+For questions or support, please contact beambrosio on GitHub.
