@@ -112,16 +112,30 @@ export default function Carousel({
   setSelectedGame,
   featured = false,
 }) {
+  // Wrap setSelectedGame to log attempts and then call the provided setter
+  const safeSetSelectedGame = (g) => {
+    if (typeof setSelectedGame === 'function') setSelectedGame(g);
+  };
   const trackRef = useRef(null);
   const isDraggingRef = useRef(false);
+  const maybeDraggingRef = useRef(false);
+  const pointerCapturedRef = useRef(false);
+  const pointerDownRef = useRef(false);
   const startXRef = useRef(0);
   const scrollLeftRef = useRef(0);
 
   function handleKeySelect(game, e) {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      setSelectedGame?.(game);
+      safeSetSelectedGame(game);
     }
+  }
+
+  // Debug helper: log click attempts
+  function logClickAttempt(game, reason) {
+    try {
+      
+    } catch (e) {}
   }
 
   function resolveIconSource(platform) {
@@ -177,37 +191,64 @@ export default function Carousel({
     );
   }
 
-  // Pointer drag handlers for click-and-drag scrolling
+  // Pointer drag handlers for click-and-drag scrolling (threshold-based)
   function onPointerDown(e) {
     const el = trackRef.current;
     if (!el) return;
-    isDraggingRef.current = true;
-    el.classList.add("dragging");
+    maybeDraggingRef.current = false;
+    pointerDownRef.current = true;
+    el.classList.remove("dragging");
     startXRef.current = e.clientX;
     scrollLeftRef.current = el.scrollLeft;
-    try {
-      e.currentTarget.setPointerCapture(e.pointerId);
-    } catch (err) {}
+
+    // Attach global pointerup/pointercancel to ensure endDrag cleanup
+    document.addEventListener("pointerup", endDragGlobal, true);
+    document.addEventListener("pointercancel", endDragGlobal, true);
   }
 
   function onPointerMove(e) {
-    if (!isDraggingRef.current) return;
-    e.preventDefault();
     const el = trackRef.current;
     if (!el) return;
+    if (!pointerDownRef.current) return;
     const x = e.clientX;
-    const walk = x - startXRef.current; // pixels moved
-    el.scrollLeft = scrollLeftRef.current - walk;
+    const walk = x - startXRef.current;
+    // Only treat as dragging when movement exceeds threshold
+    if (!isDraggingRef.current && Math.abs(walk) > 6) {
+      isDraggingRef.current = true;
+      maybeDraggingRef.current = true;
+      el.classList.add("dragging");
+      try {
+        el.setPointerCapture(e.pointerId);
+        pointerCapturedRef.current = true;
+      } catch (err) {}
+    }
+    if (isDraggingRef.current) {
+      e.preventDefault();
+      el.scrollLeft = scrollLeftRef.current - walk;
+    }
   }
 
   function endDrag(e) {
     const el = trackRef.current;
     if (!el) return;
-    isDraggingRef.current = false;
-    el.classList.remove("dragging");
-    try {
-      e?.currentTarget?.releasePointerCapture?.(e.pointerId);
-    } catch (err) {}
+    if (isDraggingRef.current) {
+      isDraggingRef.current = false;
+      el.classList.remove("dragging");
+    }
+    if (pointerCapturedRef.current) {
+      try {
+        el.releasePointerCapture(e.pointerId);
+        pointerCapturedRef.current = false;
+      } catch (err) {}
+    }
+    pointerDownRef.current = false;
+    maybeDraggingRef.current = false;
+  }
+
+  function endDragGlobal(e) {
+    endDrag(e);
+    document.removeEventListener("pointerup", endDragGlobal, true);
+    document.removeEventListener("pointercancel", endDragGlobal, true);
   }
 
   return (
@@ -221,11 +262,9 @@ export default function Carousel({
         aria-label={title || "Games carousel"}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
-        onPointerUp={endDrag}
-        onPointerCancel={endDrag}
       >
         {games.map((game, idx) => {
-          const key = game?.id ?? game?.name ?? idx;
+          const key = (game?.id ?? game?.name ?? idx) + '-' + idx;
           const isSelected = selectedGame?.id === game?.id;
           const platforms = extractPlatforms(game);
           const date = game?.released_at
@@ -237,15 +276,17 @@ export default function Carousel({
           const thumbSrcSet = buildSrcSet(game);
 
           return (
-            <button
+            <div
               key={key}
-              type="button"
               className={`carousel-item ${isSelected ? "selected" : ""}`}
-              onClick={() => setSelectedGame?.(game)}
-              onKeyDown={(e) => handleKeySelect(game, e)}
+              role="button"
+              tabIndex={0}
+              onClick={(e) => { if (!isDraggingRef.current) { safeSetSelectedGame(game); } else { try {  } catch(e) {} } }}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); safeSetSelectedGame(game); } }}
               aria-pressed={!!isSelected}
             >
-              <div className="carousel-thumb-wrap">
+            <button aria-hidden style={{position:'absolute', zIndex:0, opacity:0, inset:0, width:'100%', height:'100%', border:'none', padding:0, margin:0}} onClick={(e)=>{ e.stopPropagation(); safeSetSelectedGame(game); }} />
+              <div className="carousel-thumb-wrap" style={{cursor: 'pointer'}}>
                 <img
                   className="carousel-thumb"
                   src={thumbSrc}
@@ -260,6 +301,7 @@ export default function Carousel({
                     img.src = PLACEHOLDER;
                     img.removeAttribute("srcset");
                   }}
+                  onPointerUp={(e)=>{ if(!isDraggingRef.current){ try{ }catch(err){}; safeSetSelectedGame(game);} else { try{ }catch(err){} } }}
                 />
 
                 <div className="thumb-meta">
@@ -298,7 +340,7 @@ export default function Carousel({
                   </div>
                 </div>
               </div>
-            </button>
+            </div>
           );
         })}
       </div>
