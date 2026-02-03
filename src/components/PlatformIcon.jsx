@@ -1,14 +1,17 @@
-// javascript
-// file: `src/components/PlatformIcon.jsx`
-import React, { useState } from 'react';
-import platformIcons, { getPlatformIcon } from '../utils/platformIcons';
+import platformIcons, { getPlatformIcon } from "../utils/platformIcons";
 
-export default function PlatformIcon({ platform, size = 20, className = '', alt = '' }) {
+export default function PlatformIcon({
+  platform,
+  size = 20,
+  className = "",
+  alt = "",
+}) {
   const [failed, setFailed] = useState(false);
   if (!platform || failed) return null;
 
   // prefer named export if available
-  const resolver = typeof getPlatformIcon === 'function' ? getPlatformIcon : platformIcons;
+  const resolver =
+    typeof getPlatformIcon === "function" ? getPlatformIcon : platformIcons;
   const src = resolver(platform);
 
   if (!src) return null;
@@ -20,7 +23,7 @@ export default function PlatformIcon({ platform, size = 20, className = '', alt 
       width={size}
       height={size}
       className={className}
-      style={{ display: 'inline-block', verticalAlign: 'middle' }}
+      style={{ display: "inline-block", verticalAlign: "middle" }}
       onError={() => setFailed(true)}
     />
   );

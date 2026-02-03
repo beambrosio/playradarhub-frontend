@@ -1,0 +1,28 @@
+/* styles/Games.css */
+
+.games-container {
+  padding: 32px 16px;
+}
+
+.games-title {
+  color: #0ff;
+  font-family: 'Orbitron', sans-serif;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 100px;
+}
+
+.loading-container p {
+  color: #0ff;
+}
+
+.no-games-message {
+  color: #aaa;
+  text-align: center;
+  margin-top: 16px;
+}

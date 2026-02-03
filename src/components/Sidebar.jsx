@@ -13,6 +13,7 @@ function Sidebar({ expanded, onToggle }) {
 
   return (
     <div
+      className={`app-sidebar ${expanded ? 'expanded' : 'collapsed'}`}
       style={{
         height: "100vh",
         width: expanded ? 180 : 56,

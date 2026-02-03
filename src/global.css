@@ -39,10 +39,21 @@ body {
   background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
   background-attachment: fixed;
   color: var(--text);
-  font-family: 'Grotesk', Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family:
+    "Grotesk",
+    Inter,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 }
 
 ::selection {
@@ -62,15 +73,23 @@ body {
 /* ===========================================
    FORM ELEMENTS
    =========================================== */
-button, select, input, textarea {
+button,
+select,
+input,
+textarea {
   color: var(--text);
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: 4px;
-  transition: border-color 0.2s, background-color 0.2s;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s;
 }
 
-button:hover, select:hover, input:focus, textarea:focus {
+button:hover,
+select:hover,
+input:focus,
+textarea:focus {
   border-color: var(--accent);
   outline: none;
 }
@@ -97,4 +116,203 @@ button:hover, select:hover, input:focus, textarea:focus {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* CTA button (calendar) */
+.button-cta {
+  background: var(--bg-secondary);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.15s, transform 0.08s, box-shadow 0.12s;
+}
+.button-cta svg {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  flex: 0 0 14px;
+  fill: currentColor;
+}
+.button-cta .button-icon {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 16px;
+  margin-right: 8px;
+}
+.button-cta.icon-right .button-icon {
+  margin-right: 0;
+  margin-left: 8px;
+}
+.button-cta:hover {
+  background: rgba(0,0,0,0.06);
+  transform: translateY(-1px);
+}
+.button-cta:active {
+  transform: translateY(0);
+}
+/* Secondary variant (links) */
+.button-cta.secondary {
+  background: transparent;
+  color: var(--accent);
+  border-color: transparent;
+}
+.button-cta.secondary:hover {
+  background: rgba(0,0,0,0.04);
+  border-color: var(--border-color);
+}
+
+/* Calendar page */
+.calendar-page {
+  padding: 90px 24px 48px;
+  max-width: 980px;
+  margin: 0 auto;
+}
+.calendar-card {
+  display: flex;
+  gap: 20px;
+  background: var(--bg-primary);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+}
+.calendar-cover img {
+  width: 220px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+@media (max-width: 720px) {
+  .calendar-card { flex-direction: column; align-items: center; }
+  .calendar-cover img { width: 100%; height: auto; max-height: 420px; }
+}
+.calendar-info { flex: 1; min-width: 0; }
+.calendar-title { color: var(--accent); font-family: 'Orbitron', sans-serif; margin: 0 0 8px; font-size: 1.6rem; }
+.calendar-meta { color: #aaa; margin: 4px 0 12px; }
+.calendar-desc { color: var(--text); margin-top: 8px; line-height: 1.45; max-height: 14em; overflow: auto; }
+.calendar-actions { display: flex; gap: 12px; align-items: center; margin-top: 16px; flex-wrap: wrap; }
+.calendar-actions .button-cta { padding: 10px 14px; border-radius: 10px; font-size: 0.95rem; }
+.calendar-actions .button-cta.secondary { background: rgba(255,255,255,0.02); color: var(--accent); border-color: rgba(255,255,255,0.06); }
+.calendar-actions .button-cta + .button-cta { margin-left: 8px; }
+.button-cta.primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 8px 24px rgba(100,100,255,0.12);
+}
+.button-cta.primary:hover {
+  filter: brightness(0.95);
+  transform: translateY(-1px);
+}
+.calendar-empty { padding: 28px; text-align: center; }
+
+.in-card-calendar-popover {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1001;
+  background: var(--bg-primary);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 180px;
+}
+@media (max-width: 720px) {
+  .in-card-calendar-popover { position: static; width: 100%; margin-top: 8px; box-shadow: none; border: none; background: transparent; }
+}
+
+/* Force unified secondary CTA style (match Add to Google) */
+.button-cta.secondary,
+.calendar-actions .button-cta.secondary,
+.in-card-calendar-popover .button-cta.secondary {
+  background: rgba(0,0,0,0.14) !important;
+  color: var(--accent) !important;
+  border-color: transparent !important;
+  padding: 10px 14px !important;
+  border-radius: 10px !important;
+  font-size: 0.95rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+.button-cta.secondary svg { width: 16px; height: 16px; }
+.button-cta.secondary:hover { background: rgba(0,0,0,0.18) !important; }
+
+/* App header (responsive) */
+.app-header {
+  display: flex;
+  align-items: center;
+  background: #181818;
+  color: #0ff;
+  height: 56px;
+  padding: 0 24px;
+  box-shadow: 0 2px 8px #0008;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10001;
+  text-shadow: 0 0 4px #0ff;
+}
+
+.app-header .app-brand {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .app-header {
+    padding: 0 12px;
+    height: 48px;
+  }
+  .app-header .app-brand {
+    font-size: 18px;
+  }
+  .app-header button {
+    margin-left: -8px;
+    margin-right: 8px;
+  }
+}
+
+/* Sidebar responsive behavior */
+.app-sidebar {
+  transition: width 0.2s, transform 0.2s;
+}
+.app-sidebar.collapsed {
+  width: 56px !important;
+}
+.app-sidebar.expanded {
+  width: 180px !important;
+}
+
+@media (max-width: 768px) {
+  .app-sidebar {
+    position: fixed !important;
+    transform: translateX(-100%);
+    left: 0;
+    top: 56px;
+    z-index: 10005;
+  }
+  .app-sidebar.expanded {
+    transform: translateX(0);
+    box-shadow: 2px 0 12px rgba(0,0,0,0.6);
+  }
 }

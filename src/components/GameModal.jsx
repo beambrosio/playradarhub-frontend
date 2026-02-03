@@ -1,89 +1,175 @@
-import React from 'react';
-import { getPlatformIcon } from '../utils/platformIcons';
+import platformIcons, { getPlatformIcon } from "../utils/platformIcons.jsx";
+import { extractPlatforms } from "../components/GameList";
+import React, { useEffect, useState } from "react";
+import Button from "./Button";
+
 
 export default function GameModal({ game, onClose }) {
   if (!game) return null;
 
-  const coverUrl = game.cover?.url?.replace('t_thumb', 't_cover_big') || '';
+
+
+  const coverUrl = game?.cover?.url
+    ? game.cover.url.replace("t_thumb", "t_cover_big")
+    : "/icons/default-cover.svg";
+
+  const platforms = extractPlatforms(game);
+
+  const [icsUrl, setIcsUrl] = useState(null);
+  useEffect(() => {
+    if (!game) { setIcsUrl(null); return; }
+    const ts = game.first_release_date ? Number(game.first_release_date) * 1000 : Date.now();
+    const d = new Date(ts);
+    const dtStart = formatIcsDateUTC(d);
+    const d2 = new Date(d);
+    d2.setUTCDate(d2.getUTCDate() + 1);
+    const dtEnd = formatIcsDateUTC(d2);
+    const uid = `playradarhub-${game.id || Math.random().toString(36).slice(2)}`;
+    const dtstamp = new Date().toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
+    const escapeIcs = (s = '') => String(s).replace(/\r?\n/g, '\\n').replace(/,/g, '\\,');
+    const icsLines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//PlayRadarHub//EN',
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      `DTSTAMP:${dtstamp}`,
+      `DTSTART;VALUE=DATE:${dtStart}`,
+      `DTEND;VALUE=DATE:${dtEnd}`,
+      `SUMMARY:Release — ${escapeIcs(game.name || 'Game')}`,
+      `DESCRIPTION:${escapeIcs(game.summary || '')}`,
+      'END:VEVENT',
+      'END:VCALENDAR',
+    ].join('\r\n');
+    const blob = new Blob([icsLines], { type: 'text/calendar' });
+    const url = URL.createObjectURL(blob);
+    setIcsUrl(url);
+    return () => { try { URL.revokeObjectURL(url); } catch (e) {} };
+  }, [game]);
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function formatIcsDateUTC(d) { const yyyy = d.getUTCFullYear(); const mm = pad(d.getUTCMonth() + 1); const dd = pad(d.getUTCDate()); return `${yyyy}${mm}${dd}`; }
+  function createGoogleUrl(game) { const ts = game.first_release_date ? Number(game.first_release_date) * 1000 : Date.now(); const d = new Date(ts); const dtStart = formatIcsDateUTC(d); const d2 = new Date(d); d2.setUTCDate(d2.getUTCDate() + 1); const dtEnd = formatIcsDateUTC(d2); const gSummary = encodeURIComponent(`Release — ${game.name}`); const gDates = `${dtStart}/${dtEnd}`; const gDetails = encodeURIComponent(game.summary || ''); return `https://www.google.com/calendar/render?action=TEMPLATE&text=${gSummary}&dates=${gDates}&details=${gDetails}`; }
 
   return (
     <div
       onClick={onClose}
       style={{
-        position: 'fixed',
+        position: "fixed",
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.85)',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
+        backgroundColor: "rgba(0, 0, 0, 0.85)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
         zIndex: 1000,
-        padding: '20px'
+        padding: "20px",
       }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          background: '#1a1a2e',
-          borderRadius: '12px',
-          maxWidth: '800px',
-          width: '100%',
-          maxHeight: '90vh',
-          overflow: 'auto',
-          padding: '24px',
-          border: '1px solid #0ff'
+          background: "#1a1a2e",
+          borderRadius: "12px",
+          maxWidth: "800px",
+          width: "100%",
+          maxHeight: "90vh",
+          overflow: "auto",
+          padding: "24px",
+          border: "1px solid #0ff",
         }}
       >
         <button
           onClick={onClose}
+          aria-label="Close"
           style={{
-            float: 'right',
-            background: 'transparent',
-            border: 'none',
-            color: '#0ff',
-            fontSize: '24px',
-            cursor: 'pointer'
+            position: "absolute",
+            top: "10px",
+            right: "12px",
+            background: "transparent",
+            border: "none",
+            color: "var(--accent)",
+            fontSize: "20px",
+            cursor: "pointer",
+            padding: 6,
+            lineHeight: 1,
+            zIndex: 10,
           }}
-        >✕
+        >
+          ✕
         </button>
 
-        <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+        <div style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
           {coverUrl && (
             <img
-              src={`https:${coverUrl}`}
+              src={coverUrl}
               alt={game.name}
-              style={{ borderRadius: '8px', maxWidth: '250px' }}
+              loading="lazy"
+              onError={(e) => (e.target.src = "/icons/default.svg")}
+              style={{ borderRadius: "8px", width: "300px", height: "420px", objectFit: "cover", flex: "0 0 300px" }}
             />
           )}
 
-          <div style={{ flex: 1, minWidth: '200px' }}>
-            <h2 style={{ color: '#0ff', fontFamily: "'Orbitron', sans-serif", marginTop: 0 }}>
+          <div style={{ flex: 1, minWidth: "200px" }}>
+            <h2
+              style={{
+                color: "#0ff",
+                fontFamily: "'Orbitron', sans-serif",
+                marginTop: 0,
+              }}
+            >
               {game.name}
             </h2>
 
             {game.first_release_date && (
-              <p style={{ color: '#aaa' }}>
-                Release: {new Date(game.first_release_date * 1000).toLocaleDateString()}
+              <p style={{ color: "#aaa" }}>
+                Release:{" "}
+                {new Date(game.first_release_date * 1000).toLocaleDateString()}
               </p>
             )}
 
-            {game.platforms && (
-              <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-                {game.platforms.map(p => (
-                  <span key={p.id} title={p.name}>{getPlatformIcon(p.name)}</span>
-                ))}
+            {game.summary && (
+              <p style={{ color: "#ccc", marginTop: "12px" }}>{game.summary}</p>
+            )}
+
+            {platforms && (
+              <div style={{ display: "flex", gap: "8px", marginTop: "12px" }}>
+                {platforms.map((platform, index) => {
+                  const Icon = getPlatformIcon(platform);
+                  return (
+                    <span
+                      key={index}
+                      title={platform}
+                      style={{ display: "flex", alignItems: "center" }}
+                    >
+                      {Icon ? (
+                        <img
+                          src={Icon}
+                          alt={platform}
+                          loading="lazy"
+                          onError={(e) => (e.target.src = "/icons/default.svg")}
+                          style={{ width: "24px", height: "24px" }}
+                        />
+                      ) : (
+                        platform
+                      )}
+                    </span>
+                  );
+                })}
               </div>
             )}
+            <div className="calendar-actions" style={{ marginTop: "16px" }}>
+              <Button variant="secondary" href={icsUrl} download={`${(game.name||'game').replace(/\s+/g,'_')}.ics`} aria-label="Download .ics" style={{background:'rgba(0,0,0,0.14)', color:'var(--accent)'}} icon={<img src="/icons/download.svg" alt="download" style={{width:16,height:16}}/>}>
+                Download .ics
+              </Button>
+              <Button variant="secondary" href={createGoogleUrl(game)} target="_blank" rel="noopener noreferrer" aria-label="Add to Google" icon={<img src="/icons/google.svg" alt="google" style={{width:16,height:16}}/>}>
+                Add to Google
+              </Button>
+            </div>
           </div>
         </div>
-
-        {game.summary && (
-          <p style={{ color: '#ccc', marginTop: '20px', lineHeight: '1.6' }}>
-            {game.summary}
-          </p>
-        )}
       </div>
     </div>
   );

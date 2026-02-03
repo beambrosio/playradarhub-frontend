@@ -1,12 +1,11 @@
 // src/components/ui/Skeleton.js
-import './Skeleton.css';
+import "./Skeleton.css";
 
-const Skeleton = ({ width = '100%', height = '20px', borderRadius = '4px' }) => (
-  <div
-    className="skeleton"
-    style={{ width, height, borderRadius }}
-  />
-);
+const Skeleton = ({
+  width = "100%",
+  height = "20px",
+  borderRadius = "4px",
+}) => <div className="skeleton" style={{ width, height, borderRadius }} />;
 
 export const CardSkeleton = () => (
   <div className="card-skeleton">
