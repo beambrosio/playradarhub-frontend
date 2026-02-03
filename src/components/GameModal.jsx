@@ -7,7 +7,48 @@ import Button from "./Button";
 export default function GameModal({ game, onClose }) {
   if (!game) return null;
 
+  const modalRef = React.useRef(null);
+  const previouslyFocusedRef = React.useRef(null);
 
+  React.useEffect(() => {
+    // store the previously focused element so we can restore focus when modal closes
+    previouslyFocusedRef.current = document.activeElement;
+    // move focus into the modal
+    try { modalRef.current?.focus?.(); } catch (e) {}
+
+    function onKey(e) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onClose?.();
+      }
+      if (e.key === 'Tab') {
+        // trap focus inside the modal
+        const container = modalRef.current;
+        if (!container) return;
+        const focusable = container.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
+        if (!focusable || focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      }
+    }
+
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      try { previouslyFocusedRef.current?.focus?.(); } catch (e) {}
+    };
+  }, [onClose]);
 
   const coverUrl = game?.cover?.url
     ? game.cover.url.replace("t_thumb", "t_cover_big")
@@ -69,6 +110,8 @@ export default function GameModal({ game, onClose }) {
       }}
     >
       <div
+        ref={modalRef}
+        tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
         style={{
           background: "#1a1a2e",
