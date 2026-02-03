@@ -3,19 +3,23 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Carousel from "../components/Carousel";
 import GameList from "../components/GameList";
 import Sidebar from "../components/Sidebar";
-import { FaBars } from "react-icons/fa";
+import { FaBars, FaSearch } from "react-icons/fa";
 import styles from "../styles";
 import { getPlatformIcon } from "../utils/platformIcons";
 import { getHighResImage } from "../utils/igdbImage";
 import { Helmet } from "react-helmet-async";
 import Games from "../pages/Games";
 import About from "../pages/About";
+
 import "../global.css";
 import { ThemeProvider } from "../context/ThemeContext";
 import { HelmetProvider } from 'react-helmet-async';
 import ThemeToggle from "../components/ThemeToggle";
 import "../styles/responsive.css";
 import GameModal from "../components/GameModal";
+import { SearchFilters } from "../components/SearchFilters";
+import SlideOver from "../components/SlideOver";
+import "../components/SlideOver.css";
 
 function App() {
   const [games, setGames] = useState([]);
@@ -27,6 +31,28 @@ function App() {
   const [selectedGame, setSelectedGame] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState("");
+  const STORAGE_KEY = "gameFilters";
+  const [searchTerm, setSearchTerm] = useState(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return "";
+      const parsed = JSON.parse(raw);
+      return parsed.searchTerm || "";
+    } catch (e) {
+      return "";
+    }
+  });
+  const [filters, setFilters] = useState(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return { genre: "", platform: "", ordering: "" };
+      const parsed = JSON.parse(raw);
+      return parsed.filters || { genre: "", platform: "", ordering: "" };
+    } catch (e) {
+      return { genre: "", platform: "", ordering: "" };
+    }
+  });
+  const [filterOpen, setFilterOpen] = useState(false);
   const observer = useRef();
 
   const criticalStyles = {
@@ -41,6 +67,12 @@ function App() {
   useEffect(() => {
     Object.assign(document.body.style, criticalStyles.body);
   }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ searchTerm, filters }));
+    } catch (e) {}
+  }, [searchTerm, filters]);
 
   const fetchGames = async () => {
     if (loading || !hasMore) return;
@@ -173,12 +205,22 @@ function App() {
     }
   }
 
-  const filteredRestGames = selectedPlatform
-    ? restGames.filter((game) =>
-        (game.platforms || []).some(
-          (plat) => (plat.name || plat) === selectedPlatform,
-        ),
-      )
+  const filteredRestGames = (searchTerm || filters.genre || filters.platform || filters.ordering || selectedPlatform)
+    ? restGames.filter((game) => {
+        // searchTerm filter
+        if (searchTerm && !(game.name || "").toLowerCase().includes(searchTerm.toLowerCase())) return false;
+        // genre filter
+        if (filters.genre) {
+          if (!Array.isArray(game.genres) || !game.genres.some((g)=> (typeof g==="string"?g:g.name||g.slug||"").toLowerCase().includes(filters.genre.toLowerCase()))) return false;
+        }
+        // platform filter
+        if (filters.platform || selectedPlatform) {
+          const wanted = (filters.platform || selectedPlatform).toLowerCase();
+          const plats = (game.platforms||[]).map(p=> typeof p==='string'?p:(p && (p.name||p.abbreviation||p.slug))||"");
+          if (!plats.some(p=>p.toLowerCase().includes(wanted))) return false;
+        }
+        return true;
+      })
     : restGames;
 
   return (
@@ -208,23 +250,7 @@ function App() {
             content="Discover upcoming game releases, platform support and release dates."
           />
         </Helmet>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            background: "#181818",
-            color: "#0ff",
-            height: 56,
-            padding: "0 24px",
-            boxShadow: "0 2px 8px #0008",
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            zIndex: 10001,
-            textShadow: "0 0 4px #0ff",
-          }}
-        >
+        <header className="app-header">
           <button
             onClick={() => setSidebarOpen((open) => !open)}
             style={{
@@ -247,19 +273,16 @@ function App() {
             <FaBars />
           </button>
 
-          <span
-            style={{
-              fontFamily: "'Orbitron', sans-serif",
-              fontSize: 26,
-              fontWeight: 700,
-            }}
-          >
+          <span className="app-brand" style={{ fontFamily: "'Orbitron', sans-serif", fontSize: 26, fontWeight: 700 }}>
             PlayRadarHub
           </span>
-          <div style={{ marginLeft: "auto" }}>
+          <div style={{ marginLeft: "auto", display: "flex", gap: 8, alignItems: "center" }}>
+            <button aria-label="Open search" onClick={() => setFilterOpen(true)} style={{ background: "none", border: "none", color: "#0ff", fontSize: 20, cursor: "pointer", padding: 8 }}>
+              <FaSearch />
+            </button>
             <ThemeToggle aria-label="Toggle theme" />
           </div>
-        </div>
+        </header>
         <Sidebar
           expanded={sidebarOpen}
           onToggle={() => setSidebarOpen((open) => !open)}
@@ -272,6 +295,16 @@ function App() {
             paddingTop: 56,
           }}
         >
+          <div style={{ display: 'none' }}>
+            <div style={{ flex: 1 }}>
+              <SearchFilters
+                searchTerm={searchTerm}
+                filters={filters}
+                onSearchChange={(v) => setSearchTerm(v)}
+                onFilterChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+              />
+            </div>
+          </div>
           <Routes>
             <Route
               path="/"
@@ -319,6 +352,7 @@ function App() {
                     lastGameRef={lastGameRef}
                     keyExtractor={(game, index) => `${game.id}-${index}`}
                   />
+
                 </>
               }
             />
@@ -329,6 +363,14 @@ function App() {
         <footer style={styles.footer}>
           Made in 2025 | Contact: PlayRadarHub@gmail.com
         </footer>
+        <SlideOver
+          open={filterOpen}
+          onClose={() => setFilterOpen(false)}
+          searchTerm={searchTerm}
+          filters={filters}
+          onSearchChange={(v)=>setSearchTerm(v)}
+          onFilterChange={(newFilters)=>setFilters((prev)=>({ ...prev, ...newFilters }))}
+        />
         {selectedGame && (
           <GameModal game={selectedGame} onClose={handleCloseModal} />
         )}

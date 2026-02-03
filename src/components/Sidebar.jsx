@@ -1,3 +1,4 @@
+import React from "react";
 import { FaHome, FaGamepad, FaInfoCircle, FaBars } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -12,6 +13,7 @@ function Sidebar({ expanded, onToggle }) {
 
   return (
     <div
+      className={`app-sidebar ${expanded ? 'expanded' : 'collapsed'}`}
       style={{
         height: "100vh",
         width: expanded ? 180 : 56,

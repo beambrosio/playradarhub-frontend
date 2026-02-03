@@ -109,14 +109,71 @@ function platformIconSrc(name) {
   return defaultIcon;
 }
 
+import React, { useState, useEffect } from 'react';
+import Button from "./Button";
+
+
 export default function GameList({
   games = [],
   onCardClick,
   selectedGame,
   lastGameRef,
 }) {
+
   const { filteredGames, searchTerm, filters, setSearchTerm, setFilters } =
     useGameFilters(games);
+
+  const [activeCalendar, setActiveCalendar] = useState(null);
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function formatIcsDateUTC(d) { const yyyy = d.getUTCFullYear(); const mm = pad(d.getUTCMonth()+1); const dd = pad(d.getUTCDate()); return `${yyyy}${mm}${dd}`; }
+  function escapeIcs(s='') { return String(s).replace(/\r?\n/g, '\\n').replace(/,/g,'\\,'); }
+  function createIcsUrl(game) {
+    const ts = game.first_release_date ? Number(game.first_release_date) * 1000 : Date.now();
+    const d = new Date(ts);
+    const dtStart = formatIcsDateUTC(d);
+    const d2 = new Date(d);
+    d2.setUTCDate(d2.getUTCDate() + 1);
+    const dtEnd = formatIcsDateUTC(d2);
+    const uid = `playradarhub-${game.id || Math.random().toString(36).slice(2)}`;
+    const dtstamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    const icsLines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//PlayRadarHub//EN',
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      `DTSTAMP:${dtstamp}`,
+      `DTSTART;VALUE=DATE:${dtStart}`,
+      `DTEND;VALUE=DATE:${dtEnd}`,
+      `SUMMARY:Release — ${escapeIcs(game.name || 'Game')}`,
+      `DESCRIPTION:${escapeIcs(game.summary || '')}`,
+      'END:VEVENT',
+      'END:VCALENDAR',
+    ].join('\r\n');
+    const blob = new Blob([icsLines], { type: 'text/calendar' });
+    return URL.createObjectURL(blob);
+  }
+  function createGoogleUrl(game) {
+    const ts = game.first_release_date ? Number(game.first_release_date) * 1000 : Date.now();
+    const d = new Date(ts);
+    const dtStart = formatIcsDateUTC(d);
+    const d2 = new Date(d);
+    d2.setUTCDate(d2.getUTCDate() + 1);
+    const dtEnd = formatIcsDateUTC(d2);
+    const gSummary = encodeURIComponent(`Release — ${game.name}`);
+    const gDates = `${dtStart}/${dtEnd}`;
+    const gDetails = encodeURIComponent(game.summary || '');
+    return `https://www.google.com/calendar/render?action=TEMPLATE&text=${gSummary}&dates=${gDates}&details=${gDetails}`;
+  }
+
+  useEffect(() => {
+    return () => {
+      if (activeCalendar && activeCalendar.icsUrl) {
+        try { URL.revokeObjectURL(activeCalendar.icsUrl); } catch (e) {}
+      }
+    };
+  }, [activeCalendar]);
   if (!Array.isArray(filteredGames) || filteredGames.length === 0) {
     return (
       <div>
@@ -172,6 +229,13 @@ export default function GameList({
             <li
               key={key}
               ref={isLast ? lastGameRef : null}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onCardClick?.(game);
+                }
+              }}
               style={{
                 position: "relative",
                 zIndex: 0,
@@ -211,24 +275,42 @@ export default function GameList({
                     {date}
                   </p>
                 )}
-                <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-                  {platforms.slice(0, 4).map((p, i) => (
-                    <img
-                      key={i}
-                      src={platformIconSrc(p)}
-                      alt={p}
-                      title={p}
-                      style={{
-                        width: "18px",
-                        height: "18px",
-                      }}
-                      onError={(e) => {
-                        e.target.style.display = "none";
-                      }}
-                    />
-                  ))}
+                <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+                    {platforms.slice(0, 4).map((p, i) => (
+                      <img
+                        key={i}
+                        src={platformIconSrc(p)}
+                        alt={p}
+                        title={p}
+                        style={{
+                          width: "18px",
+                          height: "18px",
+                        }}
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                        }}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
+              {activeCalendar && activeCalendar.id === key && (
+                <div className="in-card-calendar-popover" role="dialog" aria-label={`Calendar options for ${game.name}`}>
+                  <Button variant="secondary" href={activeCalendar.icsUrl} download={`${(game.name || 'game').replace(/\s+/g, '_')}.ics`} style={{background:'rgba(0,0,0,0.14)', color:'var(--accent)'}} icon={<img src="/icons/download.svg" alt="download" style={{width:16,height:16}}/>}>
+                    Download .ics
+                  </Button>
+                  <Button variant="secondary" href={createGoogleUrl(game)} target="_blank" rel="noopener noreferrer" style={{background:'rgba(0,0,0,0.14)', color:'var(--accent)'}} icon={<img src="/icons/google.svg" alt="google" style={{width:16,height:16}}/>}>
+                    Add to Google
+                  </Button>
+                  <Button onClick={async ()=>{ try{ await navigator.clipboard.writeText(activeCalendar.icsUrl); }catch(e){} }} icon={<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>}>
+                      Copy link
+                    </Button>
+                  <Button onClick={()=>{ setActiveCalendar(null); }}>
+                    Close
+                  </Button>
+                </div>
+              )}
             </li>
           );
         })}

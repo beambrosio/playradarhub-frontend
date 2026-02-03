@@ -1,14 +1,55 @@
 import platformIcons, { getPlatformIcon } from "../utils/platformIcons.jsx";
 import { extractPlatforms } from "../components/GameList";
+import React, { useEffect, useState } from "react";
+import Button from "./Button";
+
 
 export default function GameModal({ game, onClose }) {
   if (!game) return null;
+
+
 
   const coverUrl = game?.cover?.url
     ? game.cover.url.replace("t_thumb", "t_cover_big")
     : "/icons/default-cover.svg";
 
   const platforms = extractPlatforms(game);
+
+  const [icsUrl, setIcsUrl] = useState(null);
+  useEffect(() => {
+    if (!game) { setIcsUrl(null); return; }
+    const ts = game.first_release_date ? Number(game.first_release_date) * 1000 : Date.now();
+    const d = new Date(ts);
+    const dtStart = formatIcsDateUTC(d);
+    const d2 = new Date(d);
+    d2.setUTCDate(d2.getUTCDate() + 1);
+    const dtEnd = formatIcsDateUTC(d2);
+    const uid = `playradarhub-${game.id || Math.random().toString(36).slice(2)}`;
+    const dtstamp = new Date().toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
+    const escapeIcs = (s = '') => String(s).replace(/\r?\n/g, '\\n').replace(/,/g, '\\,');
+    const icsLines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//PlayRadarHub//EN',
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      `DTSTAMP:${dtstamp}`,
+      `DTSTART;VALUE=DATE:${dtStart}`,
+      `DTEND;VALUE=DATE:${dtEnd}`,
+      `SUMMARY:Release — ${escapeIcs(game.name || 'Game')}`,
+      `DESCRIPTION:${escapeIcs(game.summary || '')}`,
+      'END:VEVENT',
+      'END:VCALENDAR',
+    ].join('\r\n');
+    const blob = new Blob([icsLines], { type: 'text/calendar' });
+    const url = URL.createObjectURL(blob);
+    setIcsUrl(url);
+    return () => { try { URL.revokeObjectURL(url); } catch (e) {} };
+  }, [game]);
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function formatIcsDateUTC(d) { const yyyy = d.getUTCFullYear(); const mm = pad(d.getUTCMonth() + 1); const dd = pad(d.getUTCDate()); return `${yyyy}${mm}${dd}`; }
+  function createGoogleUrl(game) { const ts = game.first_release_date ? Number(game.first_release_date) * 1000 : Date.now(); const d = new Date(ts); const dtStart = formatIcsDateUTC(d); const d2 = new Date(d); d2.setUTCDate(d2.getUTCDate() + 1); const dtEnd = formatIcsDateUTC(d2); const gSummary = encodeURIComponent(`Release — ${game.name}`); const gDates = `${dtStart}/${dtEnd}`; const gDetails = encodeURIComponent(game.summary || ''); return `https://www.google.com/calendar/render?action=TEMPLATE&text=${gSummary}&dates=${gDates}&details=${gDetails}`; }
 
   return (
     <div
@@ -42,13 +83,19 @@ export default function GameModal({ game, onClose }) {
       >
         <button
           onClick={onClose}
+          aria-label="Close"
           style={{
-            float: "right",
+            position: "absolute",
+            top: "10px",
+            right: "12px",
             background: "transparent",
             border: "none",
-            color: "#0ff",
-            fontSize: "24px",
+            color: "var(--accent)",
+            fontSize: "20px",
             cursor: "pointer",
+            padding: 6,
+            lineHeight: 1,
+            zIndex: 10,
           }}
         >
           ✕
@@ -61,7 +108,7 @@ export default function GameModal({ game, onClose }) {
               alt={game.name}
               loading="lazy"
               onError={(e) => (e.target.src = "/icons/default.svg")}
-              style={{ borderRadius: "8px", maxWidth: "250px" }}
+              style={{ borderRadius: "8px", width: "300px", height: "420px", objectFit: "cover", flex: "0 0 300px" }}
             />
           )}
 
@@ -113,6 +160,14 @@ export default function GameModal({ game, onClose }) {
                 })}
               </div>
             )}
+            <div className="calendar-actions" style={{ marginTop: "16px" }}>
+              <Button variant="secondary" href={icsUrl} download={`${(game.name||'game').replace(/\s+/g,'_')}.ics`} aria-label="Download .ics" style={{background:'rgba(0,0,0,0.14)', color:'var(--accent)'}} icon={<img src="/icons/download.svg" alt="download" style={{width:16,height:16}}/>}>
+                Download .ics
+              </Button>
+              <Button variant="secondary" href={createGoogleUrl(game)} target="_blank" rel="noopener noreferrer" aria-label="Add to Google" icon={<img src="/icons/google.svg" alt="google" style={{width:16,height:16}}/>}>
+                Add to Google
+              </Button>
+            </div>
           </div>
         </div>
       </div>

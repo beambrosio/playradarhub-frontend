@@ -1,3 +1,4 @@
+import React, { useId, useRef } from 'react';
 import './SearchFilters.css';
 
 export function SearchFilters({
@@ -5,15 +6,27 @@ export function SearchFilters({
   filters,
   onSearchChange,
   onFilterChange,
+  idPrefix,
 }) {
+  // Use React's useId when available for stable, unique IDs; fallback to a random id per instance
+  const reactIdAvailable = typeof useId === 'function';
+  const baseId = reactIdAvailable ? useId() : undefined;
+  const uidRef = useRef(baseId || Math.random().toString(36).slice(2, 8));
+  const prefix = idPrefix ? `${idPrefix}-` : `${uidRef.current}-`;
+
+  const searchId = `${prefix}search`;
+  const genreId = `${prefix}genre`;
+  const platformId = `${prefix}platform`;
+  const orderingId = `${prefix}ordering`;
+
   return (
     <div className="search-filters">
       <div className="search-bar">
-        <label htmlFor="search" className="visually-hidden">
+        <label htmlFor={searchId} className="visually-hidden">
           Search games
         </label>
         <input
-          id="search"
+          id={searchId}
           type="text"
           placeholder="Search games..."
           value={searchTerm}
@@ -22,9 +35,9 @@ export function SearchFilters({
       </div>
 
       <div className="filters-row">
-        <label htmlFor="genre">Genres</label>
+        <label htmlFor={genreId}>Genres</label>
         <select
-          id="genre"
+          id={genreId}
           value={filters.genre}
           onChange={(e) => onFilterChange({ ...filters, genre: e.target.value })}
         >
@@ -39,9 +52,9 @@ export function SearchFilters({
           <option value="sports">Sports</option>
         </select>
 
-        <label htmlFor="platform">Platforms</label>
+        <label htmlFor={platformId}>Platforms</label>
         <select
-          id="platform"
+          id={platformId}
           value={filters.platform}
           onChange={(e) =>
             onFilterChange({ ...filters, platform: e.target.value })
@@ -55,9 +68,9 @@ export function SearchFilters({
           <option value="mobile">Mobile</option>
         </select>
 
-        <label htmlFor="ordering">Order By</label>
+        <label htmlFor={orderingId}>Order By</label>
         <select
-          id="ordering"
+          id={orderingId}
           value={filters.ordering}
           onChange={(e) =>
             onFilterChange({ ...filters, ordering: e.target.value })

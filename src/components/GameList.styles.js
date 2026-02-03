@@ -1,8 +1,8 @@
 const styles = {
   grid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-    gap: 20,
+    gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
+    gap: 16,
     listStyle: "none",
     padding: 0,
     margin: 0,
@@ -23,6 +23,7 @@ const styles = {
     boxSizing: "border-box",
     position: "relative",
     zIndex: 0,
+    transition: "transform 0.15s ease, box-shadow 0.15s ease",
   },
   thumbWrapper: {
     width: "100%",

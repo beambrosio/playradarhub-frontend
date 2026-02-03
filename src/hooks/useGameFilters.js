@@ -1,11 +1,28 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 export function useGameFilters(games) {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filters, setFilters] = useState({
-    genre: "",
-    platform: "",
-    ordering: "",
+  const STORAGE_KEY = "gameFilters";
+
+  const [searchTerm, setSearchTerm] = useState(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return "";
+      const parsed = JSON.parse(raw);
+      return parsed.searchTerm || "";
+    } catch (e) {
+      return "";
+    }
+  });
+
+  const [filters, setFilters] = useState(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return { genre: "", platform: "", ordering: "" };
+      const parsed = JSON.parse(raw);
+      return parsed.filters || { genre: "", platform: "", ordering: "" };
+    } catch (e) {
+      return { genre: "", platform: "", ordering: "" };
+    }
   });
 
   const filteredGames = useMemo(() => {
@@ -68,6 +85,12 @@ export function useGameFilters(games) {
 
     return result;
   }, [games, searchTerm, filters]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ searchTerm, filters }));
+    } catch (e) {}
+  }, [searchTerm, filters]);
 
   return {
     filteredGames,
