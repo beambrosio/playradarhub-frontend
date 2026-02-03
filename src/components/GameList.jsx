@@ -198,7 +198,7 @@ export default function GameList({
       />
       <ul style={styles.grid}>
         {filteredGames.map((game, idx) => {
-          const key = game?.id ?? game?.name ?? idx;
+          const key = (game?.id ?? game?.name ?? idx) + '-' + idx;
           const isSelected = selectedGame?.id === game?.id;
           const isLast = idx === filteredGames.length - 1;
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useGameFilters } from "../hooks/useGameFilters";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Carousel from "../components/Carousel";
 import GameList from "../components/GameList";
@@ -31,28 +32,20 @@ function App() {
   const [selectedGame, setSelectedGame] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState("");
-  const STORAGE_KEY = "gameFilters";
-  const [searchTerm, setSearchTerm] = useState(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return "";
-      const parsed = JSON.parse(raw);
-      return parsed.searchTerm || "";
-    } catch (e) {
-      return "";
-    }
-  });
-  const [filters, setFilters] = useState(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return { genre: "", platform: "", ordering: "" };
-      const parsed = JSON.parse(raw);
-      return parsed.filters || { genre: "", platform: "", ordering: "" };
-    } catch (e) {
-      return { genre: "", platform: "", ordering: "" };
-    }
-  });
+  // Use the hook's persistence; delegate storage to useGameFilters
+  // Delegate filter state and persistence to the useGameFilters hook
+  const { filteredGames, searchTerm: hookSearchTerm, filters: hookFilters, setSearchTerm: setHookSearchTerm, setFilters: setHookFilters } = useGameFilters(games);
+  const [searchTerm, setSearchTerm] = useState(hookSearchTerm);
+  const [filters, setFilters] = useState(hookFilters);
   const [filterOpen, setFilterOpen] = useState(false);
+
+  // Keep local state in sync with hook state
+  useEffect(() => { setSearchTerm(hookSearchTerm); }, [hookSearchTerm]);
+  useEffect(() => { setFilters(hookFilters); }, [hookFilters]);
+
+  // When UI updates local search/filter, propagate back to hook
+  useEffect(() => { setHookSearchTerm(searchTerm); }, [searchTerm]);
+  useEffect(() => { setHookFilters(filters); }, [filters]);
   const observer = useRef();
 
   const criticalStyles = {
@@ -68,11 +61,6 @@ function App() {
     Object.assign(document.body.style, criticalStyles.body);
   }, []);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ searchTerm, filters }));
-    } catch (e) {}
-  }, [searchTerm, filters]);
 
   const fetchGames = async () => {
     if (loading || !hasMore) return;
@@ -87,10 +75,17 @@ function App() {
       }
       const data = await response.json();
       setGames((prevGames) => {
-          const newGames = data.filter(
-            (game) => !prevGames.some((prevGame) => prevGame.id === game.id)
-          );
-          return [...prevGames, ...newGames];
+          // Deduplicate by id/_id/name while preserving order
+          const seen = new Set(prevGames.map((g) => g.id ?? g._id ?? g.name));
+          const unique = [];
+          for (const game of data) {
+            const id = game.id ?? game._id ?? game.name ?? JSON.stringify(game);
+            if (!seen.has(id)) {
+              seen.add(id);
+              unique.push(game);
+            }
+          }
+          return [...prevGames, ...unique];
         });
       setHasMore(data.length > 0); // Stop loading if no more games
         if (data.length > 0) {

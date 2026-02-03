@@ -13,8 +13,14 @@ export default function Games() {
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef();
 
-  const { filteredGames, searchTerm, filters, setSearchTerm, setFilters } =
-    useGameFilters(games);
+  // Use centralized filter hook and expose UI setters
+  const { filteredGames, searchTerm: hookSearchTerm, filters: hookFilters, setSearchTerm: setHookSearchTerm, setFilters: setHookFilters } = useGameFilters(games);
+  const [searchTerm, setSearchTerm] = useState(hookSearchTerm);
+  const [filters, setFilters] = useState(hookFilters);
+  useEffect(() => { setSearchTerm(hookSearchTerm); }, [hookSearchTerm]);
+  useEffect(() => { setFilters(hookFilters); }, [hookFilters]);
+  useEffect(() => { setHookSearchTerm(searchTerm); }, [searchTerm]);
+  useEffect(() => { setHookFilters(filters); }, [filters]);
 
   useEffect(() => {
       const handleResize = () => {
@@ -58,12 +64,13 @@ export default function Games() {
           const gamesArray = Array.isArray(data)
             ? data
             : data.games || data.results || [];
+          // Deduplicate incoming items using id/_id/name
+          const seen = new Set(games.map((g) => g.id ?? g._id ?? g.name));
           const uniqueGames = [];
-          const seenIds = new Set(games.map((game) => game.id ?? game._id));
           for (const game of gamesArray) {
-            const id = game.id ?? game._id;
-            if (id && !seenIds.has(id)) {
-              seenIds.add(id);
+            const id = game.id ?? game._id ?? game.name ?? JSON.stringify(game);
+            if (!seen.has(id)) {
+              seen.add(id);
               uniqueGames.push(game);
             }
           }
