@@ -39,10 +39,21 @@ body {
   background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
   background-attachment: fixed;
   color: var(--text);
-  font-family: 'Grotesk', Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family:
+    "Grotesk",
+    Inter,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 }
 
 ::selection {
@@ -62,15 +73,23 @@ body {
 /* ===========================================
    FORM ELEMENTS
    =========================================== */
-button, select, input, textarea {
+button,
+select,
+input,
+textarea {
   color: var(--text);
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: 4px;
-  transition: border-color 0.2s, background-color 0.2s;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s;
 }
 
-button:hover, select:hover, input:focus, textarea:focus {
+button:hover,
+select:hover,
+input:focus,
+textarea:focus {
   border-color: var(--accent);
   outline: none;
 }

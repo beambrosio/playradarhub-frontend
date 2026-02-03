@@ -1,12 +1,12 @@
 // src/components/ThemeToggle.js
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from "../context/ThemeContext";
 
 const ThemeToggle = () => {
   const { isDark, toggleTheme } = useTheme();
 
   return (
     <button onClick={toggleTheme} className="theme-toggle">
-      {isDark ? '☀️' : '🌙'}
+      {isDark ? "☀️" : "🌙"}
     </button>
   );
 };

@@ -22,7 +22,7 @@ const styles = {
     backgroundColor: "#1e1e1e",
     textShadow: "0 0 10px #0ff, 0 0 20px #0ff",
     fontFamily: "'Orbitron', sans-serif", // For header/title
-    textShadow: "0 0 5px #0ff",
+    //    textShadow: "0 0 5px #0ff",
     fontSize: 24,
   },
   footer: {
@@ -57,14 +57,13 @@ const styles = {
     fontSize: 18,
     marginBottom: 8,
     color: "#0ff",
-    fontFamily: "'Orbitron', sans-serif"
+    fontFamily: "'Orbitron', sans-serif",
     // textShadow: "0 0 5px #0ff",
   },
   cover: {
     width: "100%",
     borderRadius: 8,
     marginBottom: 10,
-    
   },
   text: {
     fontSize: 14,

@@ -1,4 +1,3 @@
-import React from "react";
 import { FaHome, FaGamepad, FaInfoCircle, FaBars } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
