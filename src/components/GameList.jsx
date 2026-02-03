@@ -198,7 +198,9 @@ export default function GameList({
       />
       <ul style={styles.grid}>
         {filteredGames.map((game, idx) => {
-          const key = (game?.id ?? game?.name ?? idx) + '-' + idx;
+          // Ensure stable and unique key even if backend returns duplicate ids
+          const baseId = game?.id ?? game?._id ?? game?.name ?? String(idx);
+          const key = `${baseId}-${idx}`;
           const isSelected = selectedGame?.id === game?.id;
           const isLast = idx === filteredGames.length - 1;
 

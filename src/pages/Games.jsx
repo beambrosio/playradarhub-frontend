@@ -64,17 +64,27 @@ export default function Games() {
           const gamesArray = Array.isArray(data)
             ? data
             : data.games || data.results || [];
-          // Deduplicate incoming items using id/_id/name
-          const seen = new Set(games.map((g) => g.id ?? g._id ?? g.name));
+          // Deduplicate incoming items using id/_id/name and avoid duplicates across pages
+          const existingIds = new Set((games || []).map((g) => g.id ?? g._id ?? g.name));
           const uniqueGames = [];
           for (const game of gamesArray) {
             const id = game.id ?? game._id ?? game.name ?? JSON.stringify(game);
-            if (!seen.has(id)) {
-              seen.add(id);
+            if (!existingIds.has(id)) {
+              existingIds.add(id);
               uniqueGames.push(game);
             }
           }
-          setGames((prevGames) => [...prevGames, ...uniqueGames]);
+          setGames((prevGames) => {
+            // second-level guard: ensure items in prevGames are unique by id
+            const prevIds = new Set(prevGames.map((g) => g.id ?? g._id ?? g.name));
+            const filteredNew = uniqueGames.filter((g) => {
+              const id = g.id ?? g._id ?? g.name ?? JSON.stringify(g);
+              if (prevIds.has(id)) return false;
+              prevIds.add(id);
+              return true;
+            });
+            return [...prevGames, ...filteredNew];
+          });
           setHasMore(gamesArray.length > 0);
         } catch (err) {
           console.error("Fetch error:", err);
