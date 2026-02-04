@@ -220,13 +220,24 @@ textarea:focus {
 /* Modal cover and content sizing */
 .game-modal .modal-body .modal-cover {
   flex: 0 0 auto;
-  width: clamp(420px, 55vw, 1100px);
+  width: clamp(420px, 50vw, 900px); /* slightly smaller modal image width */
   max-width: none;
   height: auto;
-  max-height: calc(98vh - 140px);
+  max-height: calc(88vh - 120px); /* reduce to make modal smaller overall */
   object-fit: contain !important;
   display: block;
   border-radius: 8px;
+}
+
+/* Make consoles/platform icons slightly larger and spaced for clarity in modal */
+.modal-platforms span img {
+  width: 28px !important;
+  height: 28px !important;
+}
+.modal-platforms {
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }
 
 /* Content column should grow and scroll if needed */

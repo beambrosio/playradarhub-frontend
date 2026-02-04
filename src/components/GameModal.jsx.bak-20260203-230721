@@ -119,9 +119,9 @@ export default function GameModal({ game, onClose }) {
         style={{
           background: "#1a1a2e",
           borderRadius: "12px",
-          maxWidth: "1000px", /* reduced modal max width */
-          width: "min(96%, 1000px)",
-          maxHeight: "88vh",
+          maxWidth: "1400px",
+          width: "min(98%, 1400px)",
+          maxHeight: "98vh",
           overflow: "auto",
           padding: "12px",
           border: "1px solid #0ff",
@@ -181,7 +181,7 @@ export default function GameModal({ game, onClose }) {
             )}
 
             {platforms && (
-              <div className="modal-platforms" style={{ marginTop: "12px" }}>
+              <div style={{ display: "flex", gap: "8px", marginTop: "12px" }}>
                 {platforms.map((platform, index) => {
                   const Icon = getPlatformIcon(platform);
                   return (
@@ -207,24 +207,10 @@ export default function GameModal({ game, onClose }) {
               </div>
             )}
             <div className="calendar-actions" style={{ marginTop: "16px" }}>
-              <Button
-                variant="secondary"
-                href={icsUrl}
-                download={`${(game.name||'game').replace(/\s+/g,'_')}.ics`}
-                aria-label="Download .ics"
-                style={{ background: 'rgba(0,0,0,0.14)', color: 'var(--accent)' }}
-                icon={<img src="/icons/download.svg" alt="download" style={{width:16,height:16}} />}
-              >
+              <Button variant="secondary" href={icsUrl} download={`${(game.name||'game').replace(/\s+/g,'_')}.ics`} aria-label="Download .ics" style={{background:'rgba(0,0,0,0.14)', color:'var(--accent)'}} icon={<img src="/icons/download.svg" alt="download" style={{width:16,height:16}}/>}>
                 Download .ics
               </Button>
-              <Button
-                variant="secondary"
-                href={createGoogleUrl(game)}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Add to Google"
-                icon={<img src="/icons/google.svg" alt="google" style={{width:16,height:16}} />}
-              >
+              <Button variant="secondary" href={createGoogleUrl(game)} target="_blank" rel="noopener noreferrer" aria-label="Add to Google" icon={<img src="/icons/google.svg" alt="google" style={{width:16,height:16}}/>}>
                 Add to Google
               </Button>
             </div>
