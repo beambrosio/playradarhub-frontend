@@ -36,7 +36,7 @@ const styles = {
   },
   thumbWrapper: {
     width: "100%",
-    aspectRatio: "16 / 7",
+    height: 220,
     overflow: "hidden",
     borderRadius: 8,
     background: "#070707",
