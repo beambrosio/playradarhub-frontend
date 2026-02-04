@@ -71,9 +71,17 @@ function App() {
         `/api/next_week_release?limit=20&offset=${offset}`
       );
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errText = await response.text().catch(()=>'<no body>');
+        throw new Error(`HTTP error! status: ${response.status} - ${errText}`);
       }
-      const data = await response.json();
+      const text = await response.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        console.error('Failed parsing JSON from /api/next_week_release:', text);
+        throw new Error('Invalid JSON response from server');
+      }
       setGames((prevGames) => {
           // Deduplicate by id/_id/name while preserving order
           const seen = new Set(prevGames.map((g) => g.id ?? g._id ?? g.name));

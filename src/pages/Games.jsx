@@ -58,8 +58,18 @@ export default function Games() {
           const response = await fetch(
             `/api/all_games?limit=20&offset=${offset}&sort_by=hypes%20desc`
           );
-          if (!response.ok) throw new Error("Error fetching games");
-          const data = await response.json();
+          if (!response.ok) {
+            const errText = await response.text().catch(()=>'<no body>');
+            throw new Error(`Error fetching games: ${response.status} - ${errText}`);
+          }
+          const text = await response.text();
+          let data;
+          try {
+            data = JSON.parse(text);
+          } catch (e) {
+            console.error('Failed parsing JSON from /api/all_games:', text);
+            throw new Error('Invalid JSON response from server');
+          }
 
           const gamesArray = Array.isArray(data)
             ? data

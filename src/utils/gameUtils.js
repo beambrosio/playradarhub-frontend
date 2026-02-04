@@ -7,9 +7,17 @@ export const fetchGames = async (setGames) => {
       "/api/all_games"
     );
     if (!response.ok) {
-      throw new Error("Failed to fetch games");
+      const errText = await response.text().catch(()=>'<no body>');
+      throw new Error(`Failed to fetch games: ${response.status} - ${errText}`);
     }
-    const data = await response.json();
+    const text = await response.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      console.error('Failed parsing JSON from /api/all_games:', text);
+      return;
+    }
     setGames(data);
   } catch (error) {
     console.error("Error fetching games:", error);
