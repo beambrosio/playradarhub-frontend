@@ -119,11 +119,11 @@ export default function GameModal({ game, onClose }) {
         style={{
           background: "#1a1a2e",
           borderRadius: "12px",
-          maxWidth: "800px",
-          width: "100%",
-          maxHeight: "90vh",
+          maxWidth: "1100px",
+          width: "min(96%, 1100px)",
+          maxHeight: "92vh",
           overflow: "auto",
-          padding: "24px",
+          padding: "28px",
           border: "1px solid #0ff",
         }}
       >
@@ -154,7 +154,7 @@ export default function GameModal({ game, onClose }) {
               alt={game.name}
               loading="lazy"
               onError={(e) => (e.target.src = "/icons/default.svg")}
-              style={{ borderRadius: "8px", width: "auto", maxWidth: "480px", height: "auto", maxHeight: "calc(90vh - 160px)", objectFit: "contain", flex: "0 0 auto" }}
+              style={{ borderRadius: "8px", width: "auto", maxWidth: "720px", height: "auto", maxHeight: "calc(92vh - 160px)", objectFit: "contain", flex: "0 0 auto" }}
             />
           )}
 
