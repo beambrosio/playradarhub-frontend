@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, lazy, Suspense } from "react";
 import { useGameFilters } from "../hooks/useGameFilters";
 import { Helmet } from "react-helmet-async";
+import { apiUrl } from "../utils/api";
 
 const GameList = lazy(() => import("../components/GameList"));
 const GameModal = lazy(() => import("../components/GameModal"));
@@ -55,9 +56,7 @@ export default function Games() {
 
     const fetchGames = async () => {
         try {
-          const response = await fetch(
-            `/api/all_games?limit=20&offset=${offset}&sort_by=hypes%20desc`
-          );
+          const response = await fetch(apiUrl(`/api/all_games?limit=20&offset=${offset}&sort_by=hypes%20desc`));
           if (!response.ok) {
             const errText = await response.text().catch(()=>'<no body>');
             throw new Error(`Error fetching games: ${response.status} - ${errText}`);

@@ -3,9 +3,7 @@
 // Fetch games from the API
 export const fetchGames = async (setGames) => {
   try {
-    const response = await fetch(
-      "/api/all_games"
-    );
+    const response = await fetch(apiUrl("/api/all_games"));
     if (!response.ok) {
       const errText = await response.text().catch(()=>'<no body>');
       throw new Error(`Failed to fetch games: ${response.status} - ${errText}`);

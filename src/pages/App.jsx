@@ -8,6 +8,7 @@ import { FaBars, FaSearch } from "react-icons/fa";
 import styles from "../styles";
 import { getPlatformIcon } from "../utils/platformIcons";
 import { getHighResImage } from "../utils/igdbImage";
+import { apiUrl } from "../utils/api";
 import { Helmet } from "react-helmet-async";
 import Games from "../pages/Games";
 import About from "../pages/About";
@@ -67,9 +68,7 @@ function App() {
 
     setLoading(true);
     try {
-      const response = await fetch(
-        `/api/next_week_release?limit=20&offset=${offset}`
-      );
+      const response = await fetch(apiUrl(`/api/next_week_release?limit=20&offset=${offset}`));
       if (!response.ok) {
         const errText = await response.text().catch(()=>'<no body>');
         throw new Error(`HTTP error! status: ${response.status} - ${errText}`);
