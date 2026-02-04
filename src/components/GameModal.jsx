@@ -119,9 +119,9 @@ export default function GameModal({ game, onClose }) {
         style={{
           background: "#1a1a2e",
           borderRadius: "12px",
-          maxWidth: "1100px",
-          width: "min(96%, 1100px)",
-          maxHeight: "92vh",
+          maxWidth: "1400px",
+          width: "min(98%, 1400px)",
+          maxHeight: "94vh",
           overflow: "auto",
           padding: "28px",
           border: "1px solid #0ff",
