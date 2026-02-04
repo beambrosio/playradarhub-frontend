@@ -195,12 +195,24 @@ textarea:focus {
   flex-shrink: 0;
 }
 
+/* Modal visuals and layout improvements */
+.game-modal {
+  box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+  transform-origin: center;
+  animation: prh-modal-in 220ms cubic-bezier(.2,.9,.2,1);
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+@keyframes prh-modal-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 /* Ensure modal images preserve aspect and don't get stretched/cropped */
 .game-modal img {
   width: auto !important;
   height: auto !important;
-  max-width: 1100px;
-  max-height: calc(96vh - 120px);
+  max-width: 1000px;
+  max-height: calc(86vh - 120px);
   object-fit: contain !important;
   display: block;
   border-radius: 8px;
@@ -209,48 +221,67 @@ textarea:focus {
 /* Modal inner layout: image + content */
 .game-modal .modal-body {
   display: flex;
-  gap: 24px;
+  gap: 20px;
   flex-wrap: nowrap;
-  align-items: stretch;
-  align-content: stretch;
-  /* increase available height to let cover grow */
-  max-height: calc(98vh - 100px);
+  align-items: flex-start;
+  max-height: calc(86vh - 80px);
 }
 
 /* Modal cover and content sizing */
 .game-modal .modal-body .modal-cover {
   flex: 0 0 auto;
-  width: clamp(420px, 50vw, 900px); /* slightly smaller modal image width */
+  width: clamp(360px, 42vw, 520px);
   max-width: none;
   height: auto;
-  max-height: calc(88vh - 120px); /* reduce to make modal smaller overall */
+  max-height: calc(84vh - 120px);
   object-fit: contain !important;
   display: block;
-  border-radius: 8px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(10,10,15,0.5), rgba(6,6,10,0.85));
 }
 
-/* Make consoles/platform icons slightly larger and spaced for clarity in modal */
-.modal-platforms .platform-icon {
-  width: 28px !important;
-  height: 28px !important;
-  flex: 0 0 28px;
+/* Modal content typography and summary */
+.game-modal .modal-content .modal-title {
+  color: var(--accent);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.35rem;
+  margin: 0 0 8px;
 }
+.game-modal .modal-content .modal-summary {
+  color: #cfcfcf;
+  margin-top: 8px;
+  line-height: 1.45;
+  max-height: 36vh;
+  overflow: auto;
+}
+
+/* Platform icons only: compact circular badges */
+.platform-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 4px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 10px;
+}
+.platform-icon {
+  width: 22px !important;
+  height: 22px !important;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+}
+.platform-badge img { display:block; width:100%; height:100%; object-fit:contain; object-position:center; }
+/* Platform area layout */
 .modal-platforms {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
   flex-wrap: wrap;
 }
-.platform-badge {
-  display: inline-flex;
-  gap: 8px;
-  align-items: center;
-  background: rgba(255,255,255,0.02);
-  padding: 6px 8px;
-  border-radius: 8px;
-  color: #ddd;
-  font-size: 0.95rem;
-}
+
 /* Sticky action bar inside modal content */
 .game-modal .modal-content .calendar-actions {
   position: sticky;
@@ -259,14 +290,6 @@ textarea:focus {
   padding-top: 12px;
   margin-top: 12px;
   z-index: 2;
-}
-
-/* Make consoles/platform icons slightly larger and spaced for clarity in modal */
-.modal-platforms span img {
-  width: 28px !important;
-  height: 28px !important;
-}
-.modal-platforms {
   display: flex;
   gap: 12px;
   align-items: center;
