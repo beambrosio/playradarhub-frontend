@@ -3,8 +3,8 @@ import { useGameFilters } from "../hooks/useGameFilters";
 import { Helmet } from "react-helmet-async";
 import { apiUrl } from "../utils/api";
 
-const GameList = lazy(() => import("../components/GameList"));
-const GameModal = lazy(() => import("../components/GameModal"));
+import GameList from "../components/GameList";
+import GameModal from "../components/GameModal";
 
 export default function Games() {
   const [games, setGames] = useState([]);
