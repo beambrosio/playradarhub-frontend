@@ -251,13 +251,6 @@ textarea:focus {
   color: #ddd;
   font-size: 0.95rem;
 }
-.platform-label {
-  max-width: 120px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 /* Sticky action bar inside modal content */
 .game-modal .modal-content .calendar-actions {
   position: sticky;

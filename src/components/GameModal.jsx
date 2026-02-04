@@ -195,7 +195,6 @@ export default function GameModal({ game, onClose }) {
                           className="platform-icon"
                         />
                       ) : null}
-                      <span className="platform-label">{platform}</span>
                     </div>
                   );
                 })}
