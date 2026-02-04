@@ -213,17 +213,17 @@ textarea:focus {
   flex-wrap: nowrap;
   align-items: stretch;
   align-content: stretch;
-  /* limit body height to allow cover to grow */
-  max-height: calc(96vh - 160px);
+  /* increase available height to let cover grow */
+  max-height: calc(98vh - 100px);
 }
 
 /* Modal cover and content sizing */
 .game-modal .modal-body .modal-cover {
-  flex: 0 0 60%;
-  width: 60%;
+  flex: 0 0 auto;
+  width: clamp(420px, 55vw, 1100px);
   max-width: none;
   height: auto;
-  max-height: calc(96vh - 200px);
+  max-height: calc(98vh - 140px);
   object-fit: contain !important;
   display: block;
   border-radius: 8px;
@@ -234,7 +234,7 @@ textarea:focus {
   flex: 1 1 0%;
   min-width: 200px;
   overflow: auto;
-  max-height: calc(96vh - 160px);
+  max-height: calc(98vh - 100px);
 }
 
 @media (max-width: 900px) {

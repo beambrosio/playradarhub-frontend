@@ -121,9 +121,9 @@ export default function GameModal({ game, onClose }) {
           borderRadius: "12px",
           maxWidth: "1400px",
           width: "min(98%, 1400px)",
-          maxHeight: "96vh",
+          maxHeight: "98vh",
           overflow: "auto",
-          padding: "28px",
+          padding: "12px",
           border: "1px solid #0ff",
         }}
       >
@@ -158,7 +158,7 @@ export default function GameModal({ game, onClose }) {
             />
           )}
 
-          <div style={{ flex: 1, minWidth: "200px" }}>
+          <div className="modal-content" style={{ flex: 1, minWidth: "200px" }}>
             <h2
               style={{
                 color: "#0ff",
