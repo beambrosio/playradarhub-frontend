@@ -194,6 +194,18 @@ textarea:focus {
   border-radius: 8px;
   flex-shrink: 0;
 }
+
+/* Ensure modal images preserve aspect and don't get stretched/cropped */
+.game-modal img {
+  width: auto !important;
+  height: auto !important;
+  max-width: 480px;
+  max-height: calc(90vh - 160px);
+  object-fit: contain !important;
+  display: block;
+  border-radius: 8px;
+}
+
 @media (max-width: 720px) {
   .calendar-card { flex-direction: column; align-items: center; }
   .calendar-cover img { width: 100%; height: auto; max-height: 420px; }

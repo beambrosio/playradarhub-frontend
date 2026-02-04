@@ -112,6 +112,9 @@ export default function GameModal({ game, onClose }) {
       <div
         ref={modalRef}
         tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        className="game-modal"
         onClick={(e) => e.stopPropagation()}
         style={{
           background: "#1a1a2e",
