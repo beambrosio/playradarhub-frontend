@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import "./Carousel.css";
+import "./srOnly.css";
 import platformIconsUtil from "../utils/platformIcons";
 import getIgdbImage, { getHighResImage } from "../utils/igdbImage";
 
@@ -254,6 +255,7 @@ export default function Carousel({
   return (
     <div className={`carousel ${featured ? "carousel--featured" : ""}`}>
       {title ? <h2 className="carousel-title">{title}</h2> : null}
+      <div className="sr-only" aria-hidden="true">Use left and right arrow keys to navigate</div>
 
       <div
         ref={trackRef}

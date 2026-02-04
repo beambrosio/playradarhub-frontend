@@ -196,7 +196,7 @@ export default function GameList({
         onSearchChange={setSearchTerm}
         onFilterChange={(newFilters) => setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }))}
       />
-      <ul style={styles.grid}>
+      <ul style={styles.grid} role="list">
         {filteredGames.map((game, idx) => {
           // Ensure stable and unique key even if backend returns duplicate ids
           const baseId = game?.id ?? game?._id ?? game?.name ?? String(idx);
