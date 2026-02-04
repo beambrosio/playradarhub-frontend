@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Button({ variant = "primary", href, children, className = "", style = {}, icon = null, iconPosition = "left", ...props }) {
   const cls = ["button-cta", variant, iconPosition === "right" ? "icon-right" : "", className].filter(Boolean).join(" ");
-  const iconNode = icon ? <span className="button-icon" aria-hidden="true" aria-hidden="true">{icon}</span> : null;
+  const iconNode = icon ? <span className="button-icon" aria-hidden="true">{icon}</span> : null;
   const labelNode = <span className="button-label">{children}</span>;
   if (href) {
     return (
