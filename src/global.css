@@ -230,6 +230,45 @@ textarea:focus {
 }
 
 /* Make consoles/platform icons slightly larger and spaced for clarity in modal */
+.modal-platforms .platform-icon {
+  width: 28px !important;
+  height: 28px !important;
+  flex: 0 0 28px;
+}
+.modal-platforms {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.platform-badge {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  background: rgba(255,255,255,0.02);
+  padding: 6px 8px;
+  border-radius: 8px;
+  color: #ddd;
+  font-size: 0.95rem;
+}
+.platform-label {
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Sticky action bar inside modal content */
+.game-modal .modal-content .calendar-actions {
+  position: sticky;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(26,26,46,0.95), transparent);
+  padding-top: 12px;
+  margin-top: 12px;
+  z-index: 2;
+}
+
+/* Make consoles/platform icons slightly larger and spaced for clarity in modal */
 .modal-platforms span img {
   width: 28px !important;
   height: 28px !important;

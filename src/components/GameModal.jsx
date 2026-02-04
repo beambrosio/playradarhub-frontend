@@ -185,23 +185,18 @@ export default function GameModal({ game, onClose }) {
                 {platforms.map((platform, index) => {
                   const Icon = getPlatformIcon(platform);
                   return (
-                    <span
-                      key={index}
-                      title={platform}
-                      style={{ display: "flex", alignItems: "center" }}
-                    >
+                    <div key={index} className="platform-badge" title={platform}>
                       {Icon ? (
                         <img
                           src={Icon}
                           alt={platform}
                           loading="lazy"
                           onError={(e) => (e.target.src = "/icons/default.svg")}
-                          style={{ width: "24px", height: "24px" }}
+                          className="platform-icon"
                         />
-                      ) : (
-                        platform
-                      )}
-                    </span>
+                      ) : null}
+                      <span className="platform-label">{platform}</span>
+                    </div>
                   );
                 })}
               </div>
