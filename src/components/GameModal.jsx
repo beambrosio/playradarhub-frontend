@@ -151,7 +151,7 @@ export default function GameModal({ game, onClose }) {
               alt={game.name}
               loading="lazy"
               onError={(e) => (e.target.src = "/icons/default.svg")}
-              style={{ borderRadius: "8px", width: "300px", height: "420px", objectFit: "cover", flex: "0 0 300px" }}
+              style={{ borderRadius: "8px", width: "100%", maxWidth: "360px", height: "auto", objectFit: "contain", flex: "0 0 auto" }}
             />
           )}
 
