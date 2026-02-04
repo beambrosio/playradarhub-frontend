@@ -213,11 +213,7 @@ export default function GameModal({ game, onClose }) {
                 download={`${(game.name||'game').replace(/\s+/g,'_')}.ics`}
                 aria-label="Download .ics"
                 style={{ background: 'rgba(0,0,0,0.14)', color: 'var(--accent)' }}
-                icon={
-                  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                    <path fill="currentColor" d="M5 20h14v-2H5v2zm7-18L5.33 9h4.34v6h4.66V9h4.34L12 2z" />
-                  </svg>
-                }
+                icon={<img src="/icons/download.svg" alt="download" style={{width:16,height:16}} />}
               >
                 Download .ics
               </Button>
@@ -227,14 +223,7 @@ export default function GameModal({ game, onClose }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Add to Google"
-                icon={
-                  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                    <path fill="currentColor" d="M21.6 12.23c0-.72-.06-1.41-.16-2.08H12v3.94h5.48c-.23 1.25-.92 2.3-1.96 3.01v2.5h3.17c1.85-1.71 2.91-4.24 2.91-7.37z"/>
-                    <path fill="currentColor" d="M12 22c2.43 0 4.46-.8 5.95-2.17l-3.17-2.5c-.88.6-2.02.96-3.08.96-2.36 0-4.36-1.59-5.08-3.72H3.59v2.33C5.09 19.9 8.33 22 12 22z"/>
-                    <path fill="currentColor" d="M6.92 13.9c-.21-.6-.33-1.24-.33-1.9 0-.66.12-1.3.33-1.9V7.77H3.59C2.62 9.52 2 11.62 2 13.99c0 2.36.62 4.47 1.59 6.22l3.33-2.31z"/>
-                    <path fill="currentColor" d="M12 6.99c1.32 0 2.5.45 3.43 1.32l2.58-2.58C16.47 3.9 14.43 3 12 3 8.33 3 5.09 5.1 3.59 7.77l3.33 2.32C7.64 8.58 9.64 6.99 12 6.99z"/>
-                  </svg>
-                }
+                icon={<img src="/icons/google.svg" alt="google" style={{width:16,height:16}} />}
               >
                 Add to Google
               </Button>
