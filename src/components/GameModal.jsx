@@ -150,11 +150,11 @@ export default function GameModal({ game, onClose }) {
         <div className="modal-body">
           {coverUrl && (
             <img
+              className="modal-cover"
               src={coverUrl}
               alt={game.name}
               loading="lazy"
               onError={(e) => (e.target.src = "/icons/default.svg")}
-              style={{ borderRadius: "8px", width: "auto", maxWidth: "720px", height: "auto", maxHeight: "calc(92vh - 160px)", objectFit: "contain", flex: "0 0 auto" }}
             />
           )}
 

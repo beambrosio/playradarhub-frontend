@@ -211,7 +211,39 @@ textarea:focus {
   display: flex;
   gap: 24px;
   flex-wrap: nowrap;
-  align-items: flex-start;
+  align-items: stretch;
+  align-content: stretch;
+  /* limit body height to allow cover to grow */
+  max-height: calc(96vh - 160px);
+}
+
+/* Modal cover and content sizing */
+.game-modal .modal-body .modal-cover {
+  flex: 0 0 60%;
+  width: 60%;
+  max-width: none;
+  height: auto;
+  max-height: calc(96vh - 200px);
+  object-fit: contain !important;
+  display: block;
+  border-radius: 8px;
+}
+
+/* Content column should grow and scroll if needed */
+.game-modal .modal-body .modal-content {
+  flex: 1 1 0%;
+  min-width: 200px;
+  overflow: auto;
+  max-height: calc(96vh - 160px);
+}
+
+@media (max-width: 900px) {
+  .game-modal .modal-body .modal-cover {
+    width: 100% !important;
+    flex: 0 0 auto !important;
+    max-height: calc(70vh) !important;
+  }
+  .game-modal .modal-body .modal-content { max-height: calc(70vh); }
 }
 
 /* Stack vertically on narrow screens */
