@@ -121,7 +121,7 @@ export default function GameModal({ game, onClose }) {
           borderRadius: "12px",
           maxWidth: "1400px",
           width: "min(98%, 1400px)",
-          maxHeight: "94vh",
+          maxHeight: "96vh",
           overflow: "auto",
           padding: "28px",
           border: "1px solid #0ff",
