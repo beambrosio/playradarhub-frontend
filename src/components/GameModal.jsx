@@ -159,13 +159,7 @@ export default function GameModal({ game, onClose }) {
           )}
 
           <div className="modal-content" style={{ flex: 1, minWidth: "200px" }}>
-            <h2
-              style={{
-                color: "#0ff",
-                fontFamily: "'Orbitron', sans-serif",
-                marginTop: 0,
-              }}
-            >
+            <h2 className="modal-title">
               {game.name}
             </h2>
 
@@ -177,7 +171,7 @@ export default function GameModal({ game, onClose }) {
             )}
 
             {game.summary && (
-              <p style={{ color: "#ccc", marginTop: "12px" }}>{game.summary}</p>
+              <p className="modal-summary">{game.summary}</p>
             )}
 
             {platforms && (

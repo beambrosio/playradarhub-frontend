@@ -1,7 +1,7 @@
 // Helper to build API URLs that work with the Vite dev proxy (/api -> backend)
 // and with a production backend URL set via VITE_API_BASE environment variable.
 
-const DEFAULT_BACKEND = 'https://playradarhub-backend-54816317792.us-central1.run.app';
+const DEFAULT_BACKEND = 'https://playradarhub-backend-54816317792.us-central1.run.app/api';
 
 export function apiUrl(path) {
   // Allow explicit override via VITE_API_BASE
