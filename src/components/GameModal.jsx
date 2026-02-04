@@ -147,7 +147,7 @@ export default function GameModal({ game, onClose }) {
           ✕
         </button>
 
-        <div style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
+        <div className="modal-body">
           {coverUrl && (
             <img
               src={coverUrl}

@@ -206,6 +206,31 @@ textarea:focus {
   border-radius: 8px;
 }
 
+/* Modal inner layout: image + content */
+.game-modal .modal-body {
+  display: flex;
+  gap: 24px;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+}
+
+/* Stack vertically on narrow screens */
+@media (max-width: 900px) {
+  .game-modal .modal-body {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .game-modal img {
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: calc(70vh);
+    margin: 0 auto;
+  }
+  .game-modal {
+    padding: 16px;
+  }
+}
+
 @media (max-width: 720px) {
   .calendar-card { flex-direction: column; align-items: center; }
   .calendar-cover img { width: 100%; height: auto; max-height: 420px; }
