@@ -251,15 +251,20 @@ export default function GameList({
               onClick={() => onCardClick?.(game)}
             >
               <div style={styles.thumbWrapper}>
-                <img
-                  src={imgSrc}
-                  alt={game.name || "Game"}
-                  style={styles.thumb}
-                  loading="lazy"
-                  onError={(e) => {
-                    e.target.src = PLACEHOLDER;
-                  }}
-                />
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); onCardClick?.(game); }}
+                  aria-label={`Open details for ${game.name}`}
+                  style={{ border: 'none', background: 'none', padding: 0, margin: 0, width: '100%', cursor: 'pointer' }}
+                >
+                  <img
+                    src={imgSrc}
+                    alt={game.name || "Game"}
+                    style={styles.thumb}
+                    loading="lazy"
+                    onError={(e) => { e.target.src = PLACEHOLDER; }}
+                  />
+                </button>
               </div>
               <div style={{ padding: "12px" }}>
                 <h3
