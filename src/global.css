@@ -208,7 +208,7 @@ textarea:focus {
 }
 
 /* Ensure modal images preserve aspect and don't get stretched/cropped */
-.game-modal img {
+.game-modal img:not(.platform-icon) {
   width: auto !important;
   height: auto !important;
   max-width: 1000px;
@@ -318,7 +318,7 @@ textarea:focus {
     flex-direction: column;
     align-items: stretch;
   }
-  .game-modal img {
+  .game-modal img:not(.platform-icon) {
     max-width: 100% !important;
     height: auto !important;
     max-height: calc(70vh);
