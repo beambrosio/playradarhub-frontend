@@ -228,29 +228,7 @@ export default function GameList({
           const platforms = extractPlatforms(game);
 
           return (
-            <li
-              key={key}
-              ref={isLast ? lastGameRef : null}
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  onCardClick?.(game);
-                }
-              }}
-              style={{
-                position: "relative",
-                zIndex: 0,
-                listStyle: "none",
-                background: "#1a1a2e",
-                borderRadius: "12px",
-                overflow: "hidden",
-                cursor: "pointer",
-                border: isSelected ? "2px solid #0ff" : "2px solid transparent",
-                transition: "transform 0.2s, border-color 0.2s",
-              }}
-              onClick={() => onCardClick?.(game)}
-            >
+
             <li
               key={key}
               ref={isLast ? lastGameRef : null}
@@ -266,10 +244,10 @@ export default function GameList({
                 ...styles.card,
                 border: isSelected ? "2px solid #0ff" : styles.card.border,
               }}
-              onMouseEnter={(e)=>{ e.currentTarget.style.transform = styles.cardHover.transform; e.currentTarget.style.boxShadow = styles.cardHover.boxShadow; }}
-              onMouseLeave={(e)=>{ e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = styles.card.boxShadow; }}
-              onFocus={(e)=>{ e.currentTarget.style.outline = styles.cardFocus.outline; e.currentTarget.style.boxShadow = styles.cardFocus.boxShadow; }}
-              onBlur={(e)=>{ e.currentTarget.style.outline = ''; e.currentTarget.style.boxShadow = styles.card.boxShadow; }}
+              onMouseEnter={(e)=>{ try{ e.currentTarget.style.transform = styles.cardHover.transform; e.currentTarget.style.boxShadow = styles.cardHover.boxShadow; }catch(err){} }}
+              onMouseLeave={(e)=>{ try{ e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = styles.card.boxShadow; }catch(err){} }}
+              onFocus={(e)=>{ try{ e.currentTarget.style.outline = styles.cardFocus.outline; e.currentTarget.style.boxShadow = styles.cardFocus.boxShadow; }catch(err){} }}
+              onBlur={(e)=>{ try{ e.currentTarget.style.outline = ''; e.currentTarget.style.boxShadow = styles.card.boxShadow; }catch(err){} }}
               onClick={() => onCardClick?.(game)}
             >
               <div style={styles.thumbWrapper}>
