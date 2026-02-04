@@ -196,9 +196,11 @@ export default function GameList({
         onSearchChange={setSearchTerm}
         onFilterChange={(newFilters) => setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }))}
       />
-      <ul style={styles.grid}>
+      <ul style={styles.grid} role="list">
         {filteredGames.map((game, idx) => {
-          const key = (game?.id ?? game?.name ?? idx) + '-' + idx;
+          // Ensure stable and unique key even if backend returns duplicate ids
+          const baseId = game?.id ?? game?._id ?? game?.name ?? String(idx);
+          const key = `${baseId}-${idx}`;
           const isSelected = selectedGame?.id === game?.id;
           const isLast = idx === filteredGames.length - 1;
 
@@ -249,15 +251,38 @@ export default function GameList({
               }}
               onClick={() => onCardClick?.(game)}
             >
-              <img
-                src={imgSrc}
-                alt={game.name || "Game"}
-                style={{ width: "100%", objectFit: "cover" }}
-                loading="lazy"
-                onError={(e) => {
-                  e.target.src = PLACEHOLDER;
-                }}
-              />
+            <li
+              key={key}
+              ref={isLast ? lastGameRef : null}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onCardClick?.(game);
+                }
+              }}
+              className="game-card"
+              style={{
+                ...styles.card,
+                border: isSelected ? "2px solid #0ff" : styles.card.border,
+              }}
+              onMouseEnter={(e)=>{ e.currentTarget.style.transform = styles.cardHover.transform; e.currentTarget.style.boxShadow = styles.cardHover.boxShadow; }}
+              onMouseLeave={(e)=>{ e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = styles.card.boxShadow; }}
+              onFocus={(e)=>{ e.currentTarget.style.outline = styles.cardFocus.outline; e.currentTarget.style.boxShadow = styles.cardFocus.boxShadow; }}
+              onBlur={(e)=>{ e.currentTarget.style.outline = ''; e.currentTarget.style.boxShadow = styles.card.boxShadow; }}
+              onClick={() => onCardClick?.(game)}
+            >
+              <div style={styles.thumbWrapper}>
+                <img
+                  src={imgSrc}
+                  alt={game.name || "Game"}
+                  style={styles.thumb}
+                  loading="lazy"
+                  onError={(e) => {
+                    e.target.src = PLACEHOLDER;
+                  }}
+                />
+              </div>
               <div style={{ padding: "12px" }}>
                 <h3
                   style={{ color: "#fff", margin: "0 0 8px", fontSize: "1rem" }}
