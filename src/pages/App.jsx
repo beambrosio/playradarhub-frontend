@@ -68,7 +68,7 @@ function App() {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://playradarhub-backend-54816317792.us-central1.run.app/api/next_week_release?limit=20&offset=${offset}`
+        `/api/next_week_release?limit=20&offset=${offset}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

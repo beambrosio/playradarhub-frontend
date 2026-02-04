@@ -4,7 +4,7 @@
 export const fetchGames = async (setGames) => {
   try {
     const response = await fetch(
-      "https://playradarhub-backend-54816317792.us-central1.run.app/api/all_games"
+      "/api/all_games"
     );
     if (!response.ok) {
       throw new Error("Failed to fetch games");

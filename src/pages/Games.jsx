@@ -56,7 +56,7 @@ export default function Games() {
     const fetchGames = async () => {
         try {
           const response = await fetch(
-            `https://playradarhub-backend-54816317792.us-central1.run.app/api/all_games?limit=20&offset=${offset}&sort_by=hypes%20desc`
+            `/api/all_games?limit=20&offset=${offset}&sort_by=hypes%20desc`
           );
           if (!response.ok) throw new Error("Error fetching games");
           const data = await response.json();
