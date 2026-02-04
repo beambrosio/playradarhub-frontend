@@ -1,8 +1,8 @@
 const styles = {
   grid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-    gap: 20,
+    gridTemplateColumns: "repeat(auto-fill, minmax(420px, 1fr))",
+    gap: 24,
     listStyle: "none",
     padding: 0,
     margin: 0,
@@ -36,7 +36,7 @@ const styles = {
   },
   thumbWrapper: {
     width: "100%",
-    aspectRatio: "4 / 3",
+    aspectRatio: "16 / 9",
     overflow: "hidden",
     borderRadius: 8,
     background: "#070707",

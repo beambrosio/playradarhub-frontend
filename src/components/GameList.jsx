@@ -217,7 +217,7 @@ export default function GameList({
 
           const igdbId = normalizeIgdbId(rawCandidate);
           const thumb = igdbId
-            ? igdbUrl(igdbId, "t_720p")
+            ? igdbUrl(igdbId, "t_1080p")
             : typeof rawCandidate === "string" &&
                 /^https?:\/\//i.test(rawCandidate)
               ? rawCandidate
