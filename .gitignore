@@ -137,7 +137,7 @@ dist
 
 
 /asset-manifest.json
-/CORS_INSTRUCTIONS.md
+/.github/CORS_INSTRUCTIONS.md
 /lighthouse-desktop.json
 /lighthouse-live.json
 /robots.txt
@@ -152,7 +152,7 @@ pa11y_report.json
 .idea/
 
 # Agent/Development files
-expert-react-frontend-engineer.agent.md
+.github/expert-react-frontend-engineer.agent.md
 run-agent.js
 
 # Unused build config (using Vite)

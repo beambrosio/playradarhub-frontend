@@ -1,10 +1,11 @@
 import React from "react";
-import { FaHome, FaGamepad, FaInfoCircle, FaBars } from "react-icons/fa";
+import { FaHome, FaGamepad, FaInfoCircle, FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const menuItems = [
   { icon: <FaHome />, label: "Home", path: "/" },
   { icon: <FaGamepad />, label: "Games", path: "/games" },
+  { icon: <FaHeart />, label: "Wishlist", path: "/wishlist" },
   { icon: <FaInfoCircle />, label: "About", path: "/about" },
 ];
 

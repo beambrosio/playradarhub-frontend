@@ -2,15 +2,20 @@ import platformIcons, { getPlatformIcon } from "../utils/platformIcons.jsx";
 import { extractPlatforms } from "../components/GameList";
 import React, { useEffect, useState } from "react";
 import Button from "./Button";
+import WishlistButton from "./WishlistButton";
+import ShareButton from "./ShareButton";
 
 
-export default function GameModal({ game, onClose }) {
-  if (!game) return null;
-
+export default function GameModal({ game, onClose, onToast }) {
+  // All hooks must be called before any conditional returns
   const modalRef = React.useRef(null);
   const previouslyFocusedRef = React.useRef(null);
+  const [icsUrl, setIcsUrl] = useState(null);
 
+  // First useEffect - keyboard handling and focus management
   React.useEffect(() => {
+    if (!game) return; // Early return inside effect is OK
+
     // store the previously focused element so we can restore focus when modal closes
     previouslyFocusedRef.current = document.activeElement;
     // move focus into the modal
@@ -48,17 +53,15 @@ export default function GameModal({ game, onClose }) {
       document.removeEventListener('keydown', onKey);
       try { previouslyFocusedRef.current?.focus?.(); } catch (e) {}
     };
-  }, [onClose]);
+  }, [game, onClose]);
 
-  const coverUrl = game?.cover?.url
-    ? game.cover.url.replace("t_thumb", "t_cover_big")
-    : "/icons/default-cover.svg";
-
-  const platforms = extractPlatforms(game);
-
-  const [icsUrl, setIcsUrl] = useState(null);
+  // Second useEffect - ICS URL generation
   useEffect(() => {
-    if (!game) { setIcsUrl(null); return; }
+    if (!game) {
+      setIcsUrl(null);
+      return;
+    }
+
     const ts = game.first_release_date ? Number(game.first_release_date) * 1000 : Date.now();
     const d = new Date(ts);
     const dtStart = formatIcsDateUTC(d);
@@ -85,12 +88,42 @@ export default function GameModal({ game, onClose }) {
     const blob = new Blob([icsLines], { type: 'text/calendar' });
     const url = URL.createObjectURL(blob);
     setIcsUrl(url);
-    return () => { try { URL.revokeObjectURL(url); } catch (e) {} };
+    return () => {
+      try {
+        URL.revokeObjectURL(url);
+      } catch (e) {}
+    };
   }, [game]);
 
+  // Helper functions
   function pad(n) { return String(n).padStart(2, '0'); }
-  function formatIcsDateUTC(d) { const yyyy = d.getUTCFullYear(); const mm = pad(d.getUTCMonth() + 1); const dd = pad(d.getUTCDate()); return `${yyyy}${mm}${dd}`; }
-  function createGoogleUrl(game) { const ts = game.first_release_date ? Number(game.first_release_date) * 1000 : Date.now(); const d = new Date(ts); const dtStart = formatIcsDateUTC(d); const d2 = new Date(d); d2.setUTCDate(d2.getUTCDate() + 1); const dtEnd = formatIcsDateUTC(d2); const gSummary = encodeURIComponent(`Release — ${game.name}`); const gDates = `${dtStart}/${dtEnd}`; const gDetails = encodeURIComponent(game.summary || ''); return `https://www.google.com/calendar/render?action=TEMPLATE&text=${gSummary}&dates=${gDates}&details=${gDetails}`; }
+  function formatIcsDateUTC(d) {
+    const yyyy = d.getUTCFullYear();
+    const mm = pad(d.getUTCMonth() + 1);
+    const dd = pad(d.getUTCDate());
+    return `${yyyy}${mm}${dd}`;
+  }
+  function createGoogleUrl(game) {
+    const ts = game.first_release_date ? Number(game.first_release_date) * 1000 : Date.now();
+    const d = new Date(ts);
+    const dtStart = formatIcsDateUTC(d);
+    const d2 = new Date(d);
+    d2.setUTCDate(d2.getUTCDate() + 1);
+    const dtEnd = formatIcsDateUTC(d2);
+    const gSummary = encodeURIComponent(`Release — ${game.name}`);
+    const gDates = `${dtStart}/${dtEnd}`;
+    const gDetails = encodeURIComponent(game.summary || '');
+    return `https://www.google.com/calendar/render?action=TEMPLATE&text=${gSummary}&dates=${gDates}&details=${gDetails}`;
+  }
+
+  // Now that all hooks are called, we can do early return
+  if (!game) return null;
+
+  const coverUrl = game?.cover?.url
+    ? game.cover.url.replace("t_thumb", "t_cover_big")
+    : "/icons/default-cover.svg";
+
+  const platforms = extractPlatforms(game);
 
   return (
     <div
@@ -105,7 +138,7 @@ export default function GameModal({ game, onClose }) {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        zIndex: 1000,
+        zIndex: 10020,
         padding: "20px",
       }}
     >
@@ -125,27 +158,36 @@ export default function GameModal({ game, onClose }) {
           overflow: "auto",
           padding: "12px",
           border: "1px solid #0ff",
+          position: "relative",
         }}
       >
-        <button
-          onClick={onClose}
-          aria-label="Close"
-          style={{
-            position: "absolute",
-            top: "10px",
-            right: "12px",
-            background: "transparent",
-            border: "none",
-            color: "var(--accent)",
-            fontSize: "20px",
-            cursor: "pointer",
-            padding: 6,
-            lineHeight: 1,
-            zIndex: 10,
-          }}
-        >
-          ✕
-        </button>
+        <div style={{ position: "absolute", top: "10px", right: "12px", display: "flex", gap: "8px", alignItems: "center", zIndex: 1 }}>
+          <WishlistButton
+            game={game}
+            size="large"
+            onToggle={(added) => onToast?.(added ? 'Added to wishlist!' : 'Removed from wishlist', added ? 'success' : 'info')}
+          />
+          <ShareButton
+            game={game}
+            size="large"
+            onShare={(message, type) => onToast?.(message, type)}
+          />
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            style={{
+              background: "transparent",
+              border: "none",
+              color: "var(--accent)",
+              fontSize: "20px",
+              cursor: "pointer",
+              padding: 6,
+              lineHeight: 1,
+            }}
+          >
+            ✕
+          </button>
+        </div>
 
         <div className="modal-body">
           {coverUrl && (

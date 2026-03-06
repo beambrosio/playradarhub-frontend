@@ -5,6 +5,9 @@ import { apiUrl } from "../utils/api";
 
 import GameList from "../components/GameList";
 import GameModal from "../components/GameModal";
+import Breadcrumb from "../components/Breadcrumb";
+import BackToTop from "../components/BackToTop";
+import { ToastContainer, useToast } from "../components/Toast";
 
 export default function Games() {
   const [games, setGames] = useState([]);
@@ -13,6 +16,7 @@ export default function Games() {
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef();
+  const { toasts, addToast, removeToast } = useToast();
 
   // Use centralized filter hook and expose UI setters
   const { filteredGames, searchTerm: hookSearchTerm, filters: hookFilters, setSearchTerm: setHookSearchTerm, setFilters: setHookFilters } = useGameFilters(games);
@@ -139,15 +143,11 @@ export default function Games() {
   return (
     <>
       <Helmet>
-        <link
-          rel="preload"
-          href="/fonts/orbitron.woff2"
-          as="font"
-          type="font/woff2"
-          crossorigin="anonymous"
-        />
+        <title>All Games - PlayRadarHub</title>
+        <meta name="description" content="Browse all upcoming game releases on PlayRadarHub" />
       </Helmet>
       <Suspense fallback={<div>Loading...</div>}>
+        <Breadcrumb />
         <div style={{ padding: "32px 16px" }}>
           <h1 style={{ color: "#0ff", fontFamily: "'Orbitron', sans-serif" }}>
             All Games
@@ -170,8 +170,14 @@ export default function Games() {
             imageProps={{ loading: "lazy" }}
           />
 
-          <GameModal game={selectedGame} onClose={() => setSelectedGame(null)} />
+          <GameModal
+            game={selectedGame}
+            onClose={() => setSelectedGame(null)}
+            onToast={addToast}
+          />
         </div>
+        <BackToTop />
+        <ToastContainer toasts={toasts} removeToast={removeToast} />
       </Suspense>
     </>
   );

@@ -12,6 +12,7 @@ import { apiUrl } from "../utils/api";
 import { Helmet } from "react-helmet-async";
 import Games from "../pages/Games";
 import About from "../pages/About";
+import Wishlist from "../pages/Wishlist";
 
 import "../global.css";
 import { ThemeProvider } from "../context/ThemeContext";
@@ -22,6 +23,9 @@ import GameModal from "../components/GameModal";
 import { SearchFilters } from "../components/SearchFilters";
 import SlideOver from "../components/SlideOver";
 import "../components/SlideOver.css";
+import Breadcrumb from "../components/Breadcrumb";
+import BackToTop from "../components/BackToTop";
+import { ToastContainer, useToast } from "../components/Toast";
 
 function App() {
   const [games, setGames] = useState([]);
@@ -33,6 +37,7 @@ function App() {
   const [selectedGame, setSelectedGame] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState("");
+  const { toasts, addToast, removeToast } = useToast();
   // Use the hook's persistence; delegate storage to useGameFilters
   // Delegate filter state and persistence to the useGameFilters hook
   const { filteredGames, searchTerm: hookSearchTerm, filters: hookFilters, setSearchTerm: setHookSearchTerm, setFilters: setHookFilters } = useGameFilters(games);
@@ -230,13 +235,6 @@ function App() {
     <ThemeProvider>
       <Router>
         <Helmet>
-          <link
-            rel="preload"
-            href="/fonts/orbitron.woff2"
-            as="font"
-            type="font/woff2"
-            crossorigin="anonymous"
-          />
           <title>PlayRadarHub — Upcoming Game Releases</title>
           <meta
             name="description"
@@ -312,6 +310,7 @@ function App() {
               path="/"
               element={
                 <>
+                  <Breadcrumb />
                   <div style={{ ...styles.carouselWrapper, marginTop: 32 }}>
                     <Carousel
                         games={carouselGames}
@@ -323,7 +322,11 @@ function App() {
                         keyExtractor={(game, index) => `${game.id || 'unknown'}-${index}`}
                     />
                     {selectedGame && (
-                        <GameModal game={selectedGame} onClose={closeModal} />
+                        <GameModal
+                          game={selectedGame}
+                          onClose={closeModal}
+                          onToast={addToast}
+                        />
                     )}
                   </div>
                   <div
@@ -353,11 +356,13 @@ function App() {
                     lastGameRef={lastGameRef}
                     keyExtractor={(game, index) => `${game.id}-${index}`}
                   />
+                  <BackToTop />
                 </>
               }
             />
             <Route path="/games" element={<Games />} />
             <Route path="/about" element={<About />} />
+            <Route path="/wishlist" element={<Wishlist />} />
           </Routes>
         </div>
         <footer style={styles.footer}>
@@ -372,8 +377,13 @@ function App() {
           onFilterChange={(newFilters)=>setFilters((prev)=>({ ...prev, ...newFilters }))}
         />
         {selectedGame && (
-          <GameModal game={selectedGame} onClose={handleCloseModal} />
+          <GameModal
+            game={selectedGame}
+            onClose={handleCloseModal}
+            onToast={addToast}
+          />
         )}
+        <ToastContainer toasts={toasts} removeToast={removeToast} />
       </Router>
     </ThemeProvider>
     </HelmetProvider>
