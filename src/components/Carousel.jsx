@@ -61,6 +61,31 @@ function extractPlatforms(game) {
   return [];
 }
 
+function formatReleaseDate(game) {
+  const raw =
+    game?.released_at ??
+    game?.release_date ??
+    game?.first_release_date ??
+    game?.released ??
+    null;
+
+  if (raw == null || raw === "") return "TBA";
+
+  let parsed;
+  if (typeof raw === "number") {
+    parsed = new Date(raw > 1e12 ? raw : raw * 1000);
+  } else if (typeof raw === "string") {
+    const asNumber = Number(raw);
+    parsed = Number.isNaN(asNumber)
+      ? new Date(raw)
+      : new Date(asNumber > 1e12 ? asNumber : asNumber * 1000);
+  } else {
+    return "TBA";
+  }
+
+  return Number.isNaN(parsed.getTime()) ? "TBA" : parsed.toLocaleDateString();
+}
+
 const GENERIC_ICON_DATA_URI =
   "data:image/svg+xml;utf8," +
   encodeURIComponent(
@@ -269,9 +294,7 @@ export default function Carousel({
           const key = (game?.id ?? game?.name ?? idx) + '-' + idx;
           const isSelected = selectedGame?.id === game?.id;
           const platforms = extractPlatforms(game);
-          const date = game?.released_at
-            ? new Date(game.released_at).toLocaleDateString()
-            : game?.release_date || "Jan, 20 2026";
+          const date = formatReleaseDate(game);
 
           const thumbSrc =
             getIgdbImage(game, { size: "cover_big" }) || PLACEHOLDER;

@@ -153,6 +153,10 @@ export default function Games() {
             All Games
           </h1>
 
+          {games.length === 0 && !loading && (
+            <p style={{ color: "#aaa", textAlign: "center" }}>No games found.</p>
+          )}
+
           <GameList
             games={filteredGames}
             selectedGame={selectedGame}
@@ -165,10 +169,6 @@ export default function Games() {
             onFilterChange={setFilters}
             imageProps={{ loading: "lazy" }}
           />
-
-          {games.length === 0 && !loading && (
-            <p style={{ color: "#aaa", textAlign: "center" }}>No games found.</p>
-          )}
 
           <GameModal game={selectedGame} onClose={() => setSelectedGame(null)} />
         </div>

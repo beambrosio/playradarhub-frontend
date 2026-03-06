@@ -135,10 +135,30 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-ads.txt
+
+/asset-manifest.json
+/CORS_INSTRUCTIONS.md
+/lighthouse-desktop.json
+/lighthouse-live.json
+/robots.txt
+/public/sitemap.xml
+/.github/
+
+# Test/Audit Reports
 lighthouse_report.json
-.idea
-.htaccess
+pa11y_report.json
+
+# IDE
+.idea/
+
+# Agent/Development files
 expert-react-frontend-engineer.agent.md
 run-agent.js
+
+# Unused build config (using Vite)
+rollup.config.js
+
+# SEO/Ads (optional, remove if needed)
+.htaccess
+ads.txt
 

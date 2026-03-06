@@ -321,7 +321,6 @@ function App() {
                         selectedGame={selectedGame}
                         onCardClick={handleCardClick}
                         keyExtractor={(game, index) => `${game.id || 'unknown'}-${index}`}
-
                     />
                     {selectedGame && (
                         <GameModal game={selectedGame} onClose={closeModal} />
@@ -354,7 +353,6 @@ function App() {
                     lastGameRef={lastGameRef}
                     keyExtractor={(game, index) => `${game.id}-${index}`}
                   />
-
                 </>
               }
             />
